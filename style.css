@@ -1,0 +1,101 @@
+
+:root{
+    --color-cuadro-blanco: rgb(203, 230, 222);
+    --color-cuadro-negro: rgb(69, 136, 127);
+    --ancho-tablero: 70vh;
+}
+
+body{
+    background-color: rgb(25, 26, 26);
+    color: #eee;
+}
+
+
+.ajedrez-contenedor{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+
+    user-select: none;
+}
+
+.tablero{
+    position: relative;
+    display: grid;
+    margin: 0 auto;
+    width: var(--ancho-tablero);
+    height: var(--ancho-tablero);
+
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(8, calc(var(--ancho-tablero) / 8));
+
+    background-color: rgb(129, 146, 167);
+    border: solid 4px rgb(0, 0, 0);
+    overflow: hidden;
+    font-size: calc(var(--ancho-tablero) / (8 * 1.5));
+
+    transition: all .2s;
+}
+
+.juego-fila{
+    display: grid;
+    grid-template-columns: repeat(8,1fr);
+    margin: 0;
+}
+.juego-cuadro{
+    display: grid;
+    position: relative;
+    place-items: center;
+    color: rgb(0, 0, 0);
+    background-color: var(--color-cuadro-blanco);
+}
+
+.juego-fila > .juego-cuadro:hover{
+    opacity: .6;
+}
+
+.fila-inpar > div:nth-child(odd), .fila-par > div:nth-child(even){
+    background-color: var(--color-cuadro-negro);
+}
+
+.foco{
+    outline: dashed 2.3px rgb(139, 53, 53);
+    z-index: 1;
+}
+
+.posible-cuadro::after{
+    position: absolute;
+    content: '';
+    display: block;
+    width: calc(var(--ancho-tablero) / (8 * 4));
+    height: calc(var(--ancho-tablero) / (8 * 4));
+    border-radius: 50%;
+    background-color: rgb(139, 53, 53);
+    z-index: 1;
+}
+
+
+
+
+@media screen and (max-width: 700px){
+    :root{
+        --ancho-tablero: 70vw;
+    }
+    
+    body{
+        font-size: 12px;
+    }
+}
+
+
+@media screen and (max-width: 500px){
+    :root{
+        --ancho-tablero: 100vw;
+    }
+    
+}
+
+
+
+
