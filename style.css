@@ -1,99 +1,215 @@
+/********************* Reset **********************/
+*, *::after, *::before{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: arial;
+}
 
 :root{
-    --color-cuadro-blanco: rgb(203, 230, 222);
-    --color-cuadro-negro: rgb(69, 136, 127);
-    --ancho-tablero: 70vh;
+    --ligth-color: rgb(176 233 255);
+    --dark-color: rgb(32 126 163);
+    --bg-color: rgb(25, 26, 26);
+    --color-posible: rgb(110, 11, 11);
+    --width-game: min(85vh, 85vw);
 }
 
 body{
-    background-color: rgb(25, 26, 26);
+    background-color: var(--bg-color) ;
     color: #eee;
 }
 
+h1{
+    display: block;
+    margin: 1em auto;
+    font-size: 1.3em;
+}
 
+/********************* Components **********************/
+.btn{
+    display: block;
+    padding: .5em 1em;
+    margin: 0 auto;
+    border-radius: 100vh;
+    background-color: transparent;
+    color: var(--ligth-color);
+    border: solid .1em var(--ligth-color);
+    color: inherit;
+    cursor: pointer;
+    transition: .2s linear;
+    transition-property: background-color, color, opacity;
+}
+.btn:hover{
+    background-color: var(--ligth-color);
+    color: var(--dark-color);
+
+}
+
+/********************* Styles **********************/
 .ajedrez-contenedor{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-
+    position: relative;
+    display: grid;
+    /* width: fit-content; */
+    width: calc(var(--width-game) + 1em);
+    grid-template-columns: 1em 1fr;
+    grid-template-rows: 1fr 2em;
+    margin: 0 auto;
     user-select: none;
 }
+.ajedrez-cols{
+    display: flex;
+    width: 1em;
+    justify-content: space-around;
+    flex-direction: column;
+    height: var(--width-game);
+    color: var(--ligth-color);
+}
+
+.ajedrez-columns{
+    display: flex;
+    justify-content: space-around;
+    height: 1em;
+    line-height: 1.5;
+    margin-left: 1em;
+    width: var(--width-game);
+    color: var(--ligth-color);
+}
+
+.header{
+    display: flex;
+    padding: .5em 1em;
+    max-height: 8vh;
+    overflow: hidden;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1em 0;
+}
+.header-logo{
+    display: block;
+    font-size: 1.3em;
+    text-transform: capitalize;
+    text-decoration: none;
+    color: inherit;
+    font-weight: bold;
+}
+.header-section{
+    display: flex;
+    align-items: center;
+}
+.header-section-turno{
+    --turno-color: var(var(--ligth-color));
+    display: block;
+    margin: auto .5em;
+    width: 1.5em;
+    aspect-ratio: 1/1;
+    border-radius: 100vh;
+    background-color: var(--turno-color, var(--ligth-color));
+    transition: background-color .2s linear;
+}
+
 
 .tablero{
     position: relative;
     display: grid;
     margin: 0 auto;
-    width: var(--ancho-tablero);
-    height: var(--ancho-tablero);
+    width: var(--width-game);
+    aspect-ratio: 1/1;
 
-    grid-template-columns: 1fr;
-    grid-template-rows: repeat(8, calc(var(--ancho-tablero) / 8));
+    grid-template-columns: 100%;
+    grid-template-rows: repeat(8, 1fr);
 
-    background-color: rgb(129, 146, 167);
-    border: solid 4px rgb(0, 0, 0);
+    background-color: #fff;
     overflow: hidden;
-    font-size: calc(var(--ancho-tablero) / (8 * 1.5));
-
-    transition: all .2s;
+    font-size: calc(var(--width-game) / (8 * 1.5));
 }
 
 .juego-fila{
     display: grid;
     grid-template-columns: repeat(8,1fr);
-    margin: 0;
 }
 .juego-cuadro{
-    display: grid;
     position: relative;
+    display: grid;
+    width: 100%;
+    aspect-ratio: 1/1;
     place-items: center;
     color: rgb(0, 0, 0);
-    background-color: var(--color-cuadro-blanco);
+    background-color: var(--ligth-color);
+    overflow: hidden;
+    transition: opacity .2s linear, background-color .2s ease-in-out;
 }
-
-.juego-fila > .juego-cuadro:hover{
-    opacity: .6;
+.juego-cuadro:hover{
+    filter: invert(.2);
 }
-
-.fila-inpar > div:nth-child(odd), .fila-par > div:nth-child(even){
-    background-color: var(--color-cuadro-negro);
+.juego-ficha{
+    display: block;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    font-size: 1em;
+    cursor: pointer;
+    transition: box-shadow .2s linear;
 }
-
+.fila-par > div:nth-child(odd), .fila-inpar > div:nth-child(even){
+    background-color: var(--dark-color);
+}
 .foco{
-    outline: dashed 2.3px rgb(139, 53, 53);
+    outline: dashed 2.3px var(--color-posible);
     z-index: 1;
 }
-
 .posible-cuadro::after{
     position: absolute;
     content: '';
+    opacity: .8;
+    pointer-events: none;
     display: block;
-    width: calc(var(--ancho-tablero) / (8 * 4));
-    height: calc(var(--ancho-tablero) / (8 * 4));
+    width: calc(var(--width-game) / (8 * 4));
+    height: calc(var(--width-game) / (8 * 4));
     border-radius: 50%;
-    background-color: rgb(139, 53, 53);
+    background-color: var(--color-posible);
     z-index: 1;
 }
 
+.up-pieze{
+    transition: opacity .2s linear;
+    box-shadow: inset 0 0 .5em var(--color-posible);
+}
+
+.select-color{
+    display: block;
+    margin: auto .5em;
+    padding: .2em .5em;
+    background-color: transparent;
+    color: var(--ligth-color);
+    transition: .2s linear color, .2s linear background-color;
+    border-radius: 100vh;
+    outline: none;
+}
+.select-color option{
+    background-color: var(--bg-color);
+}
+/********************* Responsive **********************/
 
 
-
-@media screen and (max-width: 700px){
-    :root{
-        --ancho-tablero: 70vw;
-    }
-    
-    body{
-        font-size: 12px;
+@media screen and (max-width: 1000px){
+    html{
+        font-size: 14px;
     }
 }
 
 
 @media screen and (max-width: 500px){
-    :root{
-        --ancho-tablero: 100vw;
+    html{
+        font-size: 12px;
     }
-    
+    .header{
+        flex-wrap: wrap;
+        justify-content: space-evenly;
+    }
+    .header-logo{
+        text-align: center;
+        flex-basis: 100%;
+    }
 }
 
 
