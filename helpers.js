@@ -1,18 +1,20 @@
 "use strict";
 
-import { game, listPieces } from "./script.js";
+import { game, listPieces, resetGame } from "./script.js";
+import { Peon, Torre, Alfil, Caballo, Rey, Reina } from "./clases.js";
 
 // ***************** Constants and Variables ********* 
 const turnColor = document.getElementById("turnoColor");
+
+let piecesClass = {Torre, Caballo, Alfil, Reina, Rey, Peon};
+
 
 // ***************** Functions ********* 
 
 
 export function getPieceByPosition(position) {
   let piece = listPieces.find((piece) => piece.position === position);
-
   if (piece) return piece;
-//   console.log("no se encontro ficha en posicion", position);
   return null;
 }
 
@@ -79,4 +81,26 @@ export function changeTurn() {
 export function fixSetIndicator() {
   let color = game.whiteTurn ? "--ligth-color" : "--dark-color";
   turnColor.style.setProperty("--turno-color", `var(${color})`);
+}
+
+export function validWinner(){
+  let counter=0;
+  let whiteTurn = game.whiteTurn;
+  let win = true;
+
+  for(let piece of listPieces){
+    if(!win) break;
+    
+    if(whiteTurn !== piece.isWhite) continue;
+    let posibles = piece.getValidPossibles();
+    if(posibles.length === 0) counter++;
+    if(posibles.length > 0) win = false;
+  }
+
+  if(win){
+    let winners = whiteTurn? "Negras": "blancas"
+    let reset = confirm(`Jaque Mate, ${winners} Ganan \n ¿Desea volver a iniciar?`);
+
+    if(reset) return resetGame();
+  }
 }

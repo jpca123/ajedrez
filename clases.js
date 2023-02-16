@@ -1,7 +1,7 @@
 "use strict";
 
 import * as helpers from "./helpers.js";
-import { listPieces } from "./script.js";
+import { game, listPieces } from "./script.js";
 
 const pieceNames = [
   ["Peon", true, "♙"],
@@ -28,7 +28,6 @@ class Piece {
 
   move(position){
     if (!helpers.validateTurn(this)) {
-      console.log("no es tu turno", this)
       return helpers.cleanUpPieze();
     }
 
@@ -39,7 +38,8 @@ class Piece {
     this.position = position;
     helpers.quitPossibles();
     
-    return helpers.cleanUpPieze();
+    helpers.cleanUpPieze();
+    this.validJaque();
   }
 
   kill (enemy){
@@ -55,7 +55,8 @@ class Piece {
 
     let indexEnemy = listPieces.findIndex(piece => piece===enemy);
     listPieces.splice(indexEnemy, 1);  
-    return helpers.cleanUpPieze();
+    this.validJaque();
+    helpers.cleanUpPieze();
   }
 
   createNode() {
@@ -69,8 +70,14 @@ class Piece {
     return node;
   }
 
-  getPossibles() {
+  getPossibles(show=true) {
     return ["C4", "C5", "C3", "D2"];
+  }
+
+  getValidPossibles(show=true){
+    let list = this.getPossibles(show);
+    if(!list) return [];
+    return list.filter(position => this.validateJaqueInPosible(position));
   }
 
   validatePosition(position) {
@@ -84,6 +91,57 @@ class Piece {
     }
     return false;
   }
+
+  validateJaqueInPosible(position){
+    let originalposition = this.position;
+    
+    let pieceInSquare = helpers.getPieceByPosition(position);
+    let pieceInSquarePosition = "";
+
+    if(pieceInSquare) {
+      pieceInSquarePosition = pieceInSquare.position;
+      pieceInSquare.position = "--";
+    } 
+
+    this.position = position;
+
+    this.validJaque(false);
+    if(pieceInSquare) pieceInSquare.position = pieceInSquarePosition;
+    this.position = originalposition;
+
+    if(game.jaque.rey.find(rey => rey.isWhite === this.isWhite)) return false;
+
+    game.jaque = {rey: [], atacantes: []};
+    return true;
+  }
+
+  validJaque(show=true){
+    if (show) game.jaque.rey.forEach(piece=> {
+      piece.node.classList.remove("jaque");
+    })
+    game.jaque.rey = [];
+    game.jaque.atacantes = [];
+
+    listPieces.forEach(piece => {
+      let possibles = piece.getPossibles(false);
+      if(!possibles) possibles = [];
+
+      for(let i=0; i<possibles.length; i++){
+        let pieceInPosition = helpers.getPieceByPosition(possibles[i]);
+
+        if(pieceInPosition) {
+          if(piece.isWhite !== pieceInPosition.isWhite){
+
+            if(pieceInPosition.name === "Rey") {
+              if(show) pieceInPosition.node.classList.add("jaque");
+              game.jaque.rey.push(pieceInPosition);
+              game.jaque.atacantes.push(piece);
+            }
+          }
+       }
+      }
+    })
+  }
 }
 
 class Peon extends Piece {
@@ -93,7 +151,7 @@ class Peon extends Piece {
     this.node = this.createNode();
   }
 
-  getPossibles() {
+  getPossibles(show=true) {
     let dobleValidation = true;
     let list = [];
 
@@ -150,7 +208,7 @@ class Torre extends Piece {
     this.canEnroque = true;
   }
 
-  getPossibles() {
+  getPossibles(show=true) {
     let list = [];
     let vT, vR, vB, vL;
     vT = vR = vB = vL = true; // v=validation, + (Top, Right, Bottom, Left)
@@ -222,7 +280,7 @@ class Alfil extends Piece {
     this.node = this.createNode();
   }
 
-  getPossibles() {
+  getPossibles(show=true) {
     let list = [];
 
     // v=validation, Lt=left-top, Rt=right-top, Lb=left-bottom, Rb=rigth-bottom
@@ -314,7 +372,7 @@ class Caballo extends Piece {
     this.node = this.createNode();
   }
 
-  getPossibles() {
+  getPossibles(show=true) {
     let x, y, listPositions, list;
     listPositions = list = [];
 
@@ -345,7 +403,7 @@ class Rey extends Piece {
     this.listPossiblesEnroques = [];
   }
 
-  getPossibles() {
+  getPossibles(show=true) {
     let x, y, listPositions, list;
     listPositions = list = [];
 
@@ -362,13 +420,16 @@ class Rey extends Piece {
     listPositions.push(`${this.listLetters[x + 1]}${y + 1}`);
 
     list = listPositions.filter(position => this.validatePosition(position));
-    list.push(...this.getPossibleEnroque());
+    list.push(...this.getPossibleEnroque(show));
     
     return list;
   }
 
-  getPossibleEnroque(){
-    this.listPossiblesEnroques = [];
+  getPossibleEnroque(show=true){
+    if(show) this.listPossiblesEnroques = [];
+
+    if(game.jaque.rey.find(piece => piece===this )) return [];
+
     let list = [];
     let positionTorre = this.isWhite? "H1": "H8";
     let torre = helpers.getPieceByPosition(positionTorre);
@@ -382,9 +443,8 @@ class Rey extends Piece {
       let middle1 = helpers.getPieceByPosition(positionMiddle1);
       let middle2 = helpers.getPieceByPosition(positionMiddle2);
 
-      if(!torre) validation = false;
 
-      if(!torre.canEnroque) validation = false;
+      if(!torre || !torre.canEnroque) validation = false;
 
       if(middle1 || middle2) validation = false;
 
@@ -408,9 +468,8 @@ class Rey extends Piece {
       let middle2 = helpers.getPieceByPosition(positionMiddle2);
       let middle3 = helpers.getPieceByPosition(positionMiddle3);
 
-      if(!torreLargue) validation = false;
 
-      if(!torreLargue.canEnroque) validation = false;
+      if(!torreLargue || !torreLargue.canEnroque) validation = false;
 
       if(middle1 || middle2 || middle3) validation = false;
 
@@ -424,14 +483,11 @@ class Rey extends Piece {
         list.push(objectEnroque.square);
       }
     }
-
     return list;
-
   }
 
   move(position){
     super.move(position);
-    
     let enroque = this.listPossiblesEnroques.find(posible => posible.square === position);
     
     if(enroque) enroque.torre.move(enroque.squareTorre);
@@ -446,7 +502,7 @@ class Reina extends Piece {
     this.node = this.createNode();
   }
 
-  getPossibles() {
+  getPossibles(show=true) {
     let list = [];
     let vLt, vRt, vLb, vRb, vT, vR, vB, vL;
     vT = vR = vB = vL = vLt = vRt = vLb = vRb = true; // v=validation, + (Top, Right, Bottom, Left)

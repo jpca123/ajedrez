@@ -2,25 +2,17 @@
 
 import * as helpers from "./helpers.js";
 import { Peon, Torre, Alfil, Caballo, Rey, Reina } from "./clases.js";
-
 // ************************* Variables & constants ****************
 
-const table = document.getElementById("tablero");
 const saveGameBtn = document.getElementById("saveGame");
 const resetBtn = document.getElementById("reset");
 const colorInput = document.getElementById("colorInput");
 const loadBtn = document.getElementById("cargar");
+export let table = document.getElementById("tablero");
 
 // ************************* Game Variables ****************
 let piecesClass = {Torre, Caballo, Alfil, Reina, Rey, Peon};
-
-export let game = {
-  whiteTurn: true,
-  upPiece: null,
-  jaque: false,
-};
-
-let initialPieces = [
+export let initialPieces = [
   new Torre(table, true, "A1"),
   new Caballo(table, true, "B1"),
   new Alfil(table, true, "C1"),
@@ -57,6 +49,14 @@ let initialPieces = [
   new Caballo(table, false, "G8"),
   new Torre(table, false, "H8"),
 ];
+export let game = {
+  whiteTurn: true,
+  upPiece: null,
+  jaque: {
+    rey: [],
+    atacantes: []
+  },
+};
 
 export let listPieces = [];
 
@@ -67,12 +67,24 @@ function toUpPiece(piece) {
   if (!helpers.validateTurn(piece)) return helpers.cleanUpPieze();
 
   piece.node.classList.add("up-pieze");
-  let posibles = piece.getPossibles();
+  // let posibles = piece.getPossibles();
+  let posibles = piece.getValidPossibles();
   game.upPiece = piece;
   helpers.markPossibles(posibles);
 }
 
 
+export function resetGame() {
+  listPieces.forEach(piece => piece.node.remove());
+  listPieces = Array.from(initialPieces).map(piece => new piecesClass[piece.name](table, piece.isWhite, piece.position));
+  helpers.cleanUpPieze();
+  game.whiteTurn = true;
+  game.upPiece = null;
+  game.jaque = {rey: [], atacantes:[]};
+  helpers.fixSetIndicator();
+
+  return renderPieces(listPieces);
+}
 // handle when pulse a piece
 function pulsePiece(pieceNode) {
   let position = pieceNode.parentElement.dataset.id;
@@ -91,7 +103,8 @@ function pulsePiece(pieceNode) {
 
   // si intenta tomar una ficha diferente
   game.upPiece.kill(piece);
-  return helpers.changeTurn();
+  helpers.changeTurn();
+  helpers.validWinner();
 }
 
 // handle when pulse a possible empthy square
@@ -103,6 +116,7 @@ function pulseEmpthyPossibleSquare(cuadro) {
   if(!piece) {
     game.upPiece.move(position);
     helpers.changeTurn();
+    helpers.validWinner();
   }
 
   // no upPieze, no ficha
@@ -127,17 +141,7 @@ function renderPieces(pieces) {
   });
 }
 
-function resetGame() {
-  listPieces.forEach(piece => piece.node.remove());
-  listPieces = initialPieces.map(piece => new piecesClass[piece.name](table, piece.isWhite, piece.position));
-  helpers.cleanUpPieze();
-  game.whiteTurn = true;
-  game.upPiece = null;
-  game.jaque = false;
-  helpers.fixSetIndicator();
 
-  return renderPieces(listPieces);
-}
 
 function saveGame() {
   let gameName = prompt("Nombre de la partida (deberá repetirlo al cargarla)").toLowerCase();
