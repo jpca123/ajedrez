@@ -150,7 +150,7 @@ h1{
     cursor: pointer;
     transition: box-shadow .2s linear;
 }
-.fila-par > div:nth-child(odd), .fila-inpar > div:nth-child(even){
+.fila-impar > div:nth-child(odd), .fila-par > div:nth-child(even){
     background-color: var(--dark-color);
 }
 .foco{

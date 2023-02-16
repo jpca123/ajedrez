@@ -9,13 +9,12 @@ const table = document.getElementById("tablero");
 const saveGameBtn = document.getElementById("saveGame");
 const resetBtn = document.getElementById("reset");
 const colorInput = document.getElementById("colorInput");
-const turnColor = document.getElementById("turnoColor");
 const loadBtn = document.getElementById("cargar");
 
 // ************************* Game Variables ****************
 let piecesClass = {Torre, Caballo, Alfil, Reina, Rey, Peon};
 
-let game = {
+export let game = {
   whiteTurn: true,
   upPiece: null,
   jaque: false,
@@ -25,8 +24,8 @@ let initialPieces = [
   new Torre(table, true, "A1"),
   new Caballo(table, true, "B1"),
   new Alfil(table, true, "C1"),
-  new Rey(table, true, "D1"),
-  new Reina(table, true, "E1"),
+  new Reina(table, true, "D1"),
+  new Rey(table, true, "E1"),
   new Alfil(table, true, "F1"),
   new Caballo(table, true, "G1"),
   new Torre(table, true, "H1"),
@@ -52,8 +51,8 @@ let initialPieces = [
   new Torre(table, false, "A8"),
   new Caballo(table, false, "B8"),
   new Alfil(table, false, "C8"),
-  new Rey(table, false, "D8"),
-  new Reina(table, false, "E8"),
+  new Reina(table, false, "D8"),
+  new Rey(table, false, "E8"),
   new Alfil(table, false, "F8"),
   new Caballo(table, false, "G8"),
   new Torre(table, false, "H8"),
@@ -65,7 +64,7 @@ export let listPieces = [];
 
 // set the up piece an show choose scuares
 function toUpPiece(piece) {
-  if (!validateTurn(piece)) return cleanUpPieze();
+  if (!helpers.validateTurn(piece)) return helpers.cleanUpPieze();
 
   piece.node.classList.add("up-pieze");
   let posibles = piece.getPossibles();
@@ -73,73 +72,6 @@ function toUpPiece(piece) {
   helpers.markPossibles(posibles);
 }
 
-// clean a invalid action, quit the up pieze and remove the optional squares
-function cleanUpPieze() {
-  let active = document.querySelector(".up-pieze");
-  if (active) active.classList.remove("up-pieze");
-  helpers.quitPossibles();
-  game.upPiece = null;
-}
-
-// change the turn
-function changeTurn() {
-  game.whiteTurn = game.whiteTurn ? false : true;
-  fixSetIndicator();
-}
-
-// fix the turn color
-function fixSetIndicator() {
-  let color = game.whiteTurn ? "--ligth-color" : "--dark-color";
-  turnColor.style.setProperty("--turno-color", `var(${color})`);
-}
-
-// move the up piece "piece" to square in "position"
-function movePiece(piece, position) {
-  if (!validateTurn(piece)) {
-    return cleanUpPieze();
-  }
-
-  let cuadro = document.querySelector(`[data-id=${position}]`);
-
-  // si intenta mover a un cuadro no permitido
-  if (!cuadro.classList.contains("posible-cuadro")) {
-    return cleanUpPieze();
-  }
-
-  piece.node.remove();
-  cuadro.appendChild(piece.node);
-  piece.position = position;
-  helpers.quitPossibles();
-
-  changeTurn();
-
-  return cleanUpPieze();
-}
-
-// validate if the turn is correct
-function validateTurn(piece) {
-  if (piece.isWhite === game.whiteTurn) return true;
-  return false;
-}
-
-// kill a piece
-function killPiece(atacante, atacado) {
-  // si son del mismo color o no es su turno
-  if (atacante.isWhite === atacado.isWhite || !validateTurn(atacante)) {
-    return cleanUpPieze();
-  }
-
-  let casillaAtcado = atacado.node.parentElement;
-  atacante.position = atacado.position;
-  atacado.node.remove();
-  casillaAtcado.appendChild(atacante.node);
-
-  let indexAtacado = listPieces.findIndex((piece) => piece === atacado);
-  listPieces.splice(indexAtacado, 1);
-  changeTurn();
-
-  return cleanUpPieze();
-}
 
 // handle when pulse a piece
 function pulsePiece(pieceNode) {
@@ -147,37 +79,40 @@ function pulsePiece(pieceNode) {
   let piece = helpers.getPieceByPosition(position);
 
   // en caso de no encontrar ficha
-  if (piece === null) return cleanUpPieze();
+  if (!piece) return helpers.cleanUpPieze();
 
   // levantar ficha para mostrar opciones
   if (game.upPiece === null) return toUpPiece(piece);
 
   // si intenta mover a un cuadro no permitido
   if (!piece.node.parentElement.classList.contains("posible-cuadro")) {
-    return cleanUpPieze();
+    return helpers.cleanUpPieze();
   }
 
   // si intenta tomar una ficha diferente
-  return killPiece(game.upPiece, piece);
+  game.upPiece.kill(piece);
+  return helpers.changeTurn();
 }
 
 // handle when pulse a possible empthy square
 function pulseEmpthyPossibleSquare(cuadro) {
-  {
-    // mover pieza
-    let position = cuadro.dataset.id;
-    if (helpers.getPieceByPosition(position) === null)
-      movePiece(game.upPiece, position);
-
-    // no upPieze, no ficha
-    return cleanUpPieze();
+  // mover pieza
+  let position = cuadro.dataset.id;
+  let piece = helpers.getPieceByPosition(position)
+  // if (piece) movePiece(game.upPiece, position);
+  if(!piece) {
+    game.upPiece.move(position);
+    helpers.changeTurn();
   }
+
+  // no upPieze, no ficha
+  return helpers.cleanUpPieze();
 }
 
 // handle when pulse a impossible empty square
 function pulseEmpthyImpossibleSquare(square) {
   if (game.upPiece !== null) {
-    cleanUpPieze();
+    helpers.cleanUpPieze();
   }
 }
 
@@ -194,11 +129,13 @@ function renderPieces(pieces) {
 
 function resetGame() {
   listPieces.forEach(piece => piece.node.remove());
-  listPieces = initialPieces.map(piece => new piecesClass[piece.name](table, piece.isWhite, piece.position));;
+  listPieces = initialPieces.map(piece => new piecesClass[piece.name](table, piece.isWhite, piece.position));
+  helpers.cleanUpPieze();
   game.whiteTurn = true;
   game.upPiece = null;
   game.jaque = false;
-  fixSetIndicator();
+  helpers.fixSetIndicator();
+
   return renderPieces(listPieces);
 }
 
@@ -254,7 +191,7 @@ function loadGame() {
       new piecesClass[piece.name](table, piece.isWhite, piece.position)
   );
 
-  fixSetIndicator();
+  helpers.fixSetIndicator();
   return renderPieces(listPieces);
 }
 
@@ -291,7 +228,7 @@ function loadGame() {
 
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") {
-      cleanUpPieze();
+      helpers.cleanUpPieze();
       return helpers.quitPossibles();
     }
   });

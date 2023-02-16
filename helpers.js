@@ -1,6 +1,11 @@
 "use strict";
 
-import { listPieces } from "./script.js";
+import { game, listPieces } from "./script.js";
+
+// ***************** Constants and Variables ********* 
+const turnColor = document.getElementById("turnoColor");
+
+// ***************** Functions ********* 
 
 
 export function getPieceByPosition(position) {
@@ -48,4 +53,30 @@ export function setTheme(e) {
     "--color-posible",
     options[e.target.value][2]
   );
+}
+
+// validate if the turn is correct
+export function validateTurn(piece) {
+  if (piece.isWhite === game.whiteTurn) return true;
+  return false;
+}
+
+// clean a invalid action, quit the up pieze and remove the optional squares
+export function cleanUpPieze() {
+  let active = document.querySelector(".up-pieze");
+  if (active) active.classList.remove("up-pieze");
+  quitPossibles();
+  game.upPiece = null;
+}
+
+// change the turn
+export function changeTurn() {
+  game.whiteTurn = game.whiteTurn ? false : true;
+  fixSetIndicator();
+}
+
+// fix the turn color
+export function fixSetIndicator() {
+  let color = game.whiteTurn ? "--ligth-color" : "--dark-color";
+  turnColor.style.setProperty("--turno-color", `var(${color})`);
 }

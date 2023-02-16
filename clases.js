@@ -26,6 +26,38 @@ class Piece {
     this.listLetters = ["A", "B", "C", "D", "E", "F", "G", "H"];
   }
 
+  move(position){
+    if (!helpers.validateTurn(this)) {
+      console.log("no es tu turno", this)
+      return helpers.cleanUpPieze();
+    }
+
+    let cuadro = document.querySelector(`[data-id=${position}]`);
+  
+    this.node.remove();
+    cuadro.appendChild(this.node);
+    this.position = position;
+    helpers.quitPossibles();
+    
+    return helpers.cleanUpPieze();
+  }
+
+  kill (enemy){
+    // si son del mismo color o no es su turno
+    if (this.isWhite === enemy.isWhite || !helpers.validateTurn(this)) {
+      return helpers.cleanUpPieze();
+    }
+  
+    let enemyPlace = enemy.node.parentElement;
+    this.position = enemy.position;
+    enemy.node.remove();
+    enemyPlace.appendChild(this.node);
+
+    let indexEnemy = listPieces.findIndex(piece => piece===enemy);
+    listPieces.splice(indexEnemy, 1);  
+    return helpers.cleanUpPieze();
+  }
+
   createNode() {
     let node = document.createElement("span");
     node.classList.add("juego-ficha");
@@ -115,6 +147,7 @@ class Torre extends Piece {
     super(table, isWhite, position);
     this.name = "Torre";
     this.node = this.createNode();
+    this.canEnroque = true;
   }
 
   getPossibles() {
@@ -174,6 +207,11 @@ class Torre extends Piece {
       if (!vT && !vR && !vB && !vL) break;
     }
     return list;
+  }
+
+  move(position){
+    super.move(position);
+    this.canEnroque = false;
   }
 }
 
@@ -303,6 +341,8 @@ class Rey extends Piece {
     super(table, isWhite, position);
     this.name = "Rey";
     this.node = this.createNode();
+    this.canEnroque = true;
+    this.listPossiblesEnroques = [];
   }
 
   getPossibles() {
@@ -322,8 +362,80 @@ class Rey extends Piece {
     listPositions.push(`${this.listLetters[x + 1]}${y + 1}`);
 
     list = listPositions.filter(position => this.validatePosition(position));
+    list.push(...this.getPossibleEnroque());
     
     return list;
+  }
+
+  getPossibleEnroque(){
+    this.listPossiblesEnroques = [];
+    let list = [];
+    let positionTorre = this.isWhite? "H1": "H8";
+    let torre = helpers.getPieceByPosition(positionTorre);
+    let positionTorreLargue = this.isWhite? "A1": "A8";
+    let torreLargue = helpers.getPieceByPosition(positionTorreLargue);
+
+    if(this.canEnroque){
+      let validation = true;
+      let positionMiddle1 = this.isWhite? "F1": "F8";
+      let positionMiddle2 = this.isWhite? "G1": "G8";
+      let middle1 = helpers.getPieceByPosition(positionMiddle1);
+      let middle2 = helpers.getPieceByPosition(positionMiddle2);
+
+      if(!torre) validation = false;
+
+      if(!torre.canEnroque) validation = false;
+
+      if(middle1 || middle2) validation = false;
+
+      if(validation) {
+        let objectEnroque = {
+          torre,
+          square: positionMiddle2,
+          squareTorre: positionMiddle1
+        }
+        this.listPossiblesEnroques.push(objectEnroque);
+        list.push(objectEnroque.square);
+      }
+    }
+
+    if(this.canEnroque){
+      let validation = true;
+      let positionMiddle1 = this.isWhite? "D1": "D8";
+      let positionMiddle2 = this.isWhite? "C1": "C8";
+      let positionMiddle3 = this.isWhite? "B1": "B8";
+      let middle1 = helpers.getPieceByPosition(positionMiddle1);
+      let middle2 = helpers.getPieceByPosition(positionMiddle2);
+      let middle3 = helpers.getPieceByPosition(positionMiddle3);
+
+      if(!torreLargue) validation = false;
+
+      if(!torreLargue.canEnroque) validation = false;
+
+      if(middle1 || middle2 || middle3) validation = false;
+
+      if(validation) {
+        let objectEnroque = {
+          torre: torreLargue, 
+          square: positionMiddle2,
+          squareTorre: positionMiddle1
+        }
+        this.listPossiblesEnroques.push(objectEnroque);
+        list.push(objectEnroque.square);
+      }
+    }
+
+    return list;
+
+  }
+
+  move(position){
+    super.move(position);
+    
+    let enroque = this.listPossiblesEnroques.find(posible => posible.square === position);
+    
+    if(enroque) enroque.torre.move(enroque.squareTorre);
+    this.canEnroque = false;
   }
 }
 
