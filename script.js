@@ -141,12 +141,27 @@ function renderPieces(pieces) {
   });
 }
 
+function removeGame(name){
+  let games = localStorage.getItem("Games");
+  let listGames;
+  if (games) listGames = JSON.parse(games);
+  else listGames = [];
 
+  let gameRemove = listGames.findIndex(game => game.name === name);
+  if(gameRemove < 0) return helpers.showInfo(`No se encontro partida <b>${game}</b>`, "Error al remover partida");
 
-function saveGame() {
-  let gameName = prompt("Nombre de la partida (deberá repetirlo al cargarla)").toLowerCase();
+  listGames.splice(gameRemove, 1);
+  localStorage.setItem("Games", JSON.stringify(listGames));
+
+  let btn = document.querySelector(`[data-name=${name}]`);
+  if(!btn) return helpers.showInfo(`No se encontro en la lista la partida <b>${game}</b>`, "Advertencia al remover partida");
+
+  btn.parentElement.parentElement.remove();
+}
+
+function saveGame(name) {
   let objectGame = {
-    name: gameName,
+    name: name,
     game,
     pieces: listPieces.map(piece => {
       return {
@@ -157,7 +172,6 @@ function saveGame() {
     }),
   };
 
-
   let listGames = JSON.parse(localStorage.getItem("Games"));
   if (!listGames) {
     localStorage.setItem("Games", JSON.stringify([]))
@@ -165,28 +179,25 @@ function saveGame() {
   };
 
   // validadate games with same name
-  let sameNameGame = listGames.findIndex((game) => game.name === gameName);
-
-  if (sameNameGame > 0) {
-    if (!confirm("ya hay una partida con este nombre, ¿desea reeplazarla?")) return;
-  }
+  let sameNameGame = listGames.findIndex((game) => game.name === name);
 
   listGames.splice(sameNameGame, 1)
   listGames.push(objectGame);
   localStorage.setItem("Games", JSON.stringify(listGames));
+  helpers.addSavedGame([objectGame]);
   resetGame();
+  helpers.closeModal();
 }
 
-function loadGame() {
+function loadGame(name) {
   let games = localStorage.getItem("Games");
   let listGames;
   if (games) listGames = JSON.parse(games);
   else return alert("aun no hay partidas guardadas");
 
-  let gameName = prompt("Ingresa el nombre de la partida").toLocaleLowerCase();
-  let loadGame = listGames.find((game) => game.name === gameName);
+  let loadGame = listGames.find((game) => game.name === name);
 
-  if (!loadGame) return alert(`no se encontro la partida ${gameName}`);
+  if (!loadGame) return helpers.showInfo(`No se encontro la partida <b>${name}</b>`, "No encontrado");
 
   game = loadGame.game;
   listPieces.forEach(piece => piece.node.remove());
@@ -203,26 +214,51 @@ function loadGame() {
 
   document.addEventListener("click", (e) => {
     // square with piece
-    if (e.target.matches(".juego-ficha")) return pulsePiece(e.target);
+    if (e.target.matches(".juego-ficha")) pulsePiece(e.target);
 
     //  possible square whithout piece
-    if (e.target.matches(".posible-cuadro"))
-      return pulseEmpthyPossibleSquare(e.target);
+    if (e.target.matches(".posible-cuadro")) pulseEmpthyPossibleSquare(e.target);
 
     // not possible square without piece
-    if (e.target.matches(".juego-cuadro")) return pulseEmpthyImpossibleSquare();
+    if (e.target.matches(".juego-cuadro")) pulseEmpthyImpossibleSquare();
 
-    // load saved game
-    if (e.target === loadBtn) return loadGame();
-    if (e.target === resetBtn) return resetGame();
+    if (e.target === resetBtn) resetGame();
 
-      // save game
-      if (e.target === saveGameBtn) return saveGame();
+    if(e.target.matches(".modal-close")){
+      helpers.closeModal();
+    }
+
+    if(e.target.matches("[data-modal]")){
+      let idModal = e.target.dataset.modal;
+      if(!idModal) return console.log('no se encontro modal', e.target);
+
+      helpers.showModal(idModal);
+    }
+
+    if(e.target.matches(".list-item-btn-load")){
+      let nameGame = e.target.dataset.name || "N/A";
+      loadGame(nameGame);
+      helpers.closeModal();
+    }
+
+    if(e.target.matches(".list-item-btn-remove")){
+      let nameGame = e.target.dataset.name || "N/A";
+      removeGame(nameGame);
+      helpers.closeModal();
+    }
+
   });
 
   document.addEventListener("DOMContentLoaded", (e) => {
     resetGame();
     renderPieces(listPieces);
+
+    let games = localStorage.getItem("Games");
+    let listGames;
+    if (games) listGames = JSON.parse(games);
+    else listGames = [];
+
+    helpers.addSavedGame(listGames);
   });
 
   document.addEventListener("change", (e) => {
@@ -233,7 +269,17 @@ function loadGame() {
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") {
       helpers.cleanUpPieze();
-      return helpers.quitPossibles();
+      helpers.quitPossibles();
+      helpers.closeModal();
     }
   });
 
+document.addEventListener("submit", e=>{
+  e.preventDefault();
+
+  let nameGame = e.target.name.value;
+  console.log("nombre partida", nameGame)
+  saveGame(nameGame);
+  helpers.closeModal();
+  e.target.reset();
+})

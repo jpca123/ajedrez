@@ -104,3 +104,61 @@ export function validWinner(){
     if(reset) return resetGame();
   }
 }
+
+export function closeModal(){
+  let modal = document.querySelectorAll(".modal-active").forEach(modal => modal.classList.remove("modal-active"));
+}
+
+export function showModal(name){
+  let modal = document.getElementById(name);
+  if(!modal) return console.log('no se encontro modal', e.target);
+
+  modal.classList.add("modal-active")
+}
+
+export function addSavedGame(games){
+  let list = document.querySelector(".modal .list");
+  if(!list) console.log("no se encontro la lista");
+
+  let fragment = document.createDocumentFragment();
+  games.forEach(game =>{
+    let item = document.createElement("article");
+    let name = document.createElement("span");
+    let btnContainer = document.createElement("span");
+    let btn = document.createElement("button");
+    let btnRemove = document.createElement("button");
+
+    item.classList.add("list-item");
+    name.classList.add("list-item-name");
+    btnContainer.classList.add("list-item-btn-container");
+    btn.classList.add("btn", "list-item-btn-load");
+    btnRemove.classList.add("btn", "btn-danger", "list-item-btn-remove");
+
+    item.textContent = game.name;
+    btn.textContent = "Cargar";
+    btnRemove.textContent = "Eliminar";
+    btn.dataset.name = game.name;
+    btnRemove.dataset.name = game.name;
+
+    btnContainer.appendChild(btnRemove);
+    btnContainer.appendChild(btn);
+
+    item.appendChild(name);
+    item.appendChild(btnContainer);
+    fragment.appendChild(item);
+  });
+
+  list.appendChild(fragment);
+}
+
+export function showInfo(message, title="Información"){
+  let information = document.querySelector("#modalInformation .modal-information");
+  let titleNode = document.querySelector("#modalInformation .modal-title");
+  if(!information || !titleNode) console.log("no se encontro modal information");
+
+  titleNode.innerHTML = title;
+
+  information.innerHTML = message;
+  closeModal();
+  showModal("modalInformation");
+}
