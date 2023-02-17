@@ -36,7 +36,7 @@ export function setTheme(e) {
   let options = {
     Azul: ["rgb(176 233 255)", "rgb(32 126 163)", "rgb(110, 11, 11)"],
     Verde: ["rgb(203 230 222)", "rgb(69 136 127)", "rgb(110, 11, 11)"],
-    Rojo: ["rgb(255 234 234)", "rgb(199 84 84)", "rgb(11 73 110)"],
+    Rojo: ["rgb(255 234 234)", "rgb(181 62 62)", "rgb(11 73 110)"],
     Marron: ["rgb(255 238 219)", "rgb(169 116 79)", "rgb(11 73 110)"],
     Morado: ["rgb(248 233 255)", "rgb(117 94 171)", "rgb(11 73 110)"],
     Clasico: ["rgb(255 255 255)", "rgb(137 137 137)", "rgb(110, 11, 11)"],
@@ -99,9 +99,8 @@ export function validWinner(){
 
   if(win){
     let winners = whiteTurn? "Negras": "blancas"
-    let reset = confirm(`Jaque Mate, ${winners} Ganan \n ¿Desea volver a iniciar?`);
 
-    if(reset) return resetGame();
+    return showInfo(`Las ${winners} han dado <b>Jaque Mate</b> y han Ganado la partida`, "Jaque Mate");
   }
 }
 

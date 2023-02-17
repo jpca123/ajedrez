@@ -22,7 +22,7 @@
 
         <secion class="header-section">
             <span>Color</span>
-            <select id="colorInput" class="select-color">
+            <select id="colorInput" class="form-select">
                 <option selected value="Azul">Azul</option>
                 <option value="Verde">Verde</option>
                 <option value="Marron">Marron</option>
@@ -33,159 +33,185 @@
         </secion>
     </header>
 
-    <section class="ajedrez-contenedor">
-        <div class="ajedrez-cols">
-            <span class="ajedrex-cols-col">8</span>
-            <span class="ajedrex-cols-col">7</span>
-            <span class="ajedrex-cols-col">6</span>
-            <span class="ajedrex-cols-col">5</span>
-            <span class="ajedrex-cols-col">4</span>
-            <span class="ajedrex-cols-col">3</span>
-            <span class="ajedrex-cols-col">2</span>
-            <span class="ajedrex-cols-col">1</span>
-        </div>
+    <main>
 
-        <div class="tablero" id="tablero">
-            <section class="juego-fila fila-par">
-                <div class="juego-cuadro" data-id="A8"></div>
-                <div class="juego-cuadro" data-id="B8"></div>
-                <div class="juego-cuadro" data-id="C8"></div>
-                <div class="juego-cuadro" data-id="D8"></div>
-                <div class="juego-cuadro" data-id="E8"></div>
-                <div class="juego-cuadro" data-id="F8"></div>
-                <div class="juego-cuadro" data-id="G8"></div>
-                <div class="juego-cuadro" data-id="H8"></div>
-            </section>
-            <section class="juego-fila fila-impar">
-                <div class="juego-cuadro" data-id="A7"></div>
-                <div class="juego-cuadro" data-id="B7"></div>
-                <div class="juego-cuadro" data-id="C7"></div>
-                <div class="juego-cuadro" data-id="D7"></div>
-                <div class="juego-cuadro" data-id="E7"></div>
-                <div class="juego-cuadro" data-id="F7"></div>
-                <div class="juego-cuadro" data-id="G7"></div>
-                <div class="juego-cuadro" data-id="H7"></div>
-            </section>
-            <section class="juego-fila fila-par">
-                <div class="juego-cuadro" data-id="A6"></div>
-                <div class="juego-cuadro" data-id="B6"></div>
-                <div class="juego-cuadro" data-id="C6"></div>
-                <div class="juego-cuadro" data-id="D6"></div>
-                <div class="juego-cuadro" data-id="E6"></div>
-                <div class="juego-cuadro" data-id="F6"></div>
-                <div class="juego-cuadro" data-id="G6"></div>
-                <div class="juego-cuadro" data-id="H6"></div>
-            </section>
-            <section class="juego-fila fila-impar">
-                <div class="juego-cuadro" data-id="A5"></div>
-                <div class="juego-cuadro" data-id="B5"></div>
-                <div class="juego-cuadro" data-id="C5"></div>
-                <div class="juego-cuadro" data-id="D5"></div>
-                <div class="juego-cuadro" data-id="E5"></div>
-                <div class="juego-cuadro" data-id="F5"></div>
-                <div class="juego-cuadro" data-id="G5"></div>
-                <div class="juego-cuadro" data-id="H5"></div>
-            </section>
-            <section class="juego-fila fila-par">
-                <div class="juego-cuadro" data-id="A4"></div>
-                <div class="juego-cuadro" data-id="B4"></div>
-                <div class="juego-cuadro" data-id="C4"></div>
-                <div class="juego-cuadro" data-id="D4"></div>
-                <div class="juego-cuadro" data-id="E4"></div>
-                <div class="juego-cuadro" data-id="F4"></div>
-                <div class="juego-cuadro" data-id="G4"></div>
-                <div class="juego-cuadro" data-id="H4"></div>
-            </section>
-            <section class="juego-fila fila-impar">
-                <div class="juego-cuadro" data-id="A3"></div>
-                <div class="juego-cuadro" data-id="B3"></div>
-                <div class="juego-cuadro" data-id="C3"></div>
-                <div class="juego-cuadro" data-id="D3"></div>
-                <div class="juego-cuadro" data-id="E3"></div>
-                <div class="juego-cuadro" data-id="F3"></div>
-                <div class="juego-cuadro" data-id="G3"></div>
-                <div class="juego-cuadro" data-id="H3"></div>
-            </section>
-            <section class="juego-fila fila-par">
-                <div class="juego-cuadro" data-id="A2"></div>
-                <div class="juego-cuadro" data-id="B2"></div>
-                <div class="juego-cuadro" data-id="C2"></div>
-                <div class="juego-cuadro" data-id="D2"></div>
-                <div class="juego-cuadro" data-id="E2"></div>
-                <div class="juego-cuadro" data-id="F2"></div>
-                <div class="juego-cuadro" data-id="G2"></div>
-                <div class="juego-cuadro" data-id="H2"></div>
-            </section>
-            <section class="juego-fila fila-impar">
-                <div class="juego-cuadro" data-id="A1"></div>
-                <div class="juego-cuadro" data-id="B1"></div>
-                <div class="juego-cuadro" data-id="C1"></div>
-                <div class="juego-cuadro" data-id="D1"></div>
-                <div class="juego-cuadro" data-id="E1"></div>
-                <div class="juego-cuadro" data-id="F1"></div>
-                <div class="juego-cuadro" data-id="G1"></div>
-                <div class="juego-cuadro" data-id="H1"></div>
-            </section>
-        </div>
-
-        <div class="ajedrez-columns">
-            <span class="ajedrex-columns-column">A</span>
-            <span class="ajedrex-columns-column">B</span>
-            <span class="ajedrex-columns-column">C</span>
-            <span class="ajedrex-columns-column">D</span>
-            <span class="ajedrex-columns-column">E</span>
-            <span class="ajedrex-columns-column">F</span>
-            <span class="ajedrex-columns-column">G</span>
-            <span class="ajedrex-columns-column">H</span>
-        </div>
-
-    </section>
-
-    <section class="ajedrez-options">
-            <button class="btn" data-modal="modalSaveGame" id="saveGame">Guardar</button>
-            <button class="btn" id="reset">Resetear</button>
-            <button class="btn" data-modal="modalLoadGame" id="cargar">Cargar</button>
-    </section>
-
-    <article class="modal" id="modalSaveGame">
-        <div class="modal-header">
-            <h3 class="modal-title">Guardar Partida</h3>
-            <button class="modal-close">x</button>
-        </div>
-        <div class="modal-content">
-            <form class="form" name="Guardar">
-                <h3 class="form-title">Guardar Partida</h3>
-
-                <label class="form-label" for="guardarNombre">Nombre Partida</label>
-                <input type="text" class="form-input" id="guardarNombre" name="name" required minlength="3" maxlength="30" placeholder="Nombre">
-                <small class="form-info">partidas con el mismo nombre seran sobreescritas</small>
-                <button type="submit" class="btn">Guardar</button>
-            </form>
-        </div>
-    </article>
-
-    <article class="modal" id="modalLoadGame">
-        <div class="modal-header">
-            <h3 class="modal-title">Cargar juego</h3>
-            <button class="modal-close">x</button>
-        </div>
-        <div class="modal-content">
-            <h3 class="list-title">Lista Partidas</h3>
-                <section class="list">
-                    <!-- list saved games -->
+        <section class="ajedrez-contenedor">
+            <div class="ajedrez-cols">
+                <span class="ajedrex-cols-col">8</span>
+                <span class="ajedrex-cols-col">7</span>
+                <span class="ajedrex-cols-col">6</span>
+                <span class="ajedrex-cols-col">5</span>
+                <span class="ajedrex-cols-col">4</span>
+                <span class="ajedrex-cols-col">3</span>
+                <span class="ajedrex-cols-col">2</span>
+                <span class="ajedrex-cols-col">1</span>
+            </div>
+    
+            <div class="tablero" id="tablero">
+                <section class="juego-fila fila-par">
+                    <div class="juego-cuadro" data-id="A8"></div>
+                    <div class="juego-cuadro" data-id="B8"></div>
+                    <div class="juego-cuadro" data-id="C8"></div>
+                    <div class="juego-cuadro" data-id="D8"></div>
+                    <div class="juego-cuadro" data-id="E8"></div>
+                    <div class="juego-cuadro" data-id="F8"></div>
+                    <div class="juego-cuadro" data-id="G8"></div>
+                    <div class="juego-cuadro" data-id="H8"></div>
                 </section>
-        </div>
-    </article>
-
-    <article class="modal" id="modalInformation">
-        <div class="modal-header">
-            <h3 class="modal-title">Información</h3>
-            <button class="modal-close">x</button>
-        </div>
-        <div class="modal-content">
-            <p class="modal-information"></p>
-        </div>
-    </article>
+                <section class="juego-fila fila-impar">
+                    <div class="juego-cuadro" data-id="A7"></div>
+                    <div class="juego-cuadro" data-id="B7"></div>
+                    <div class="juego-cuadro" data-id="C7"></div>
+                    <div class="juego-cuadro" data-id="D7"></div>
+                    <div class="juego-cuadro" data-id="E7"></div>
+                    <div class="juego-cuadro" data-id="F7"></div>
+                    <div class="juego-cuadro" data-id="G7"></div>
+                    <div class="juego-cuadro" data-id="H7"></div>
+                </section>
+                <section class="juego-fila fila-par">
+                    <div class="juego-cuadro" data-id="A6"></div>
+                    <div class="juego-cuadro" data-id="B6"></div>
+                    <div class="juego-cuadro" data-id="C6"></div>
+                    <div class="juego-cuadro" data-id="D6"></div>
+                    <div class="juego-cuadro" data-id="E6"></div>
+                    <div class="juego-cuadro" data-id="F6"></div>
+                    <div class="juego-cuadro" data-id="G6"></div>
+                    <div class="juego-cuadro" data-id="H6"></div>
+                </section>
+                <section class="juego-fila fila-impar">
+                    <div class="juego-cuadro" data-id="A5"></div>
+                    <div class="juego-cuadro" data-id="B5"></div>
+                    <div class="juego-cuadro" data-id="C5"></div>
+                    <div class="juego-cuadro" data-id="D5"></div>
+                    <div class="juego-cuadro" data-id="E5"></div>
+                    <div class="juego-cuadro" data-id="F5"></div>
+                    <div class="juego-cuadro" data-id="G5"></div>
+                    <div class="juego-cuadro" data-id="H5"></div>
+                </section>
+                <section class="juego-fila fila-par">
+                    <div class="juego-cuadro" data-id="A4"></div>
+                    <div class="juego-cuadro" data-id="B4"></div>
+                    <div class="juego-cuadro" data-id="C4"></div>
+                    <div class="juego-cuadro" data-id="D4"></div>
+                    <div class="juego-cuadro" data-id="E4"></div>
+                    <div class="juego-cuadro" data-id="F4"></div>
+                    <div class="juego-cuadro" data-id="G4"></div>
+                    <div class="juego-cuadro" data-id="H4"></div>
+                </section>
+                <section class="juego-fila fila-impar">
+                    <div class="juego-cuadro" data-id="A3"></div>
+                    <div class="juego-cuadro" data-id="B3"></div>
+                    <div class="juego-cuadro" data-id="C3"></div>
+                    <div class="juego-cuadro" data-id="D3"></div>
+                    <div class="juego-cuadro" data-id="E3"></div>
+                    <div class="juego-cuadro" data-id="F3"></div>
+                    <div class="juego-cuadro" data-id="G3"></div>
+                    <div class="juego-cuadro" data-id="H3"></div>
+                </section>
+                <section class="juego-fila fila-par">
+                    <div class="juego-cuadro" data-id="A2"></div>
+                    <div class="juego-cuadro" data-id="B2"></div>
+                    <div class="juego-cuadro" data-id="C2"></div>
+                    <div class="juego-cuadro" data-id="D2"></div>
+                    <div class="juego-cuadro" data-id="E2"></div>
+                    <div class="juego-cuadro" data-id="F2"></div>
+                    <div class="juego-cuadro" data-id="G2"></div>
+                    <div class="juego-cuadro" data-id="H2"></div>
+                </section>
+                <section class="juego-fila fila-impar">
+                    <div class="juego-cuadro" data-id="A1"></div>
+                    <div class="juego-cuadro" data-id="B1"></div>
+                    <div class="juego-cuadro" data-id="C1"></div>
+                    <div class="juego-cuadro" data-id="D1"></div>
+                    <div class="juego-cuadro" data-id="E1"></div>
+                    <div class="juego-cuadro" data-id="F1"></div>
+                    <div class="juego-cuadro" data-id="G1"></div>
+                    <div class="juego-cuadro" data-id="H1"></div>
+                </section>
+            </div>
+    
+            <div class="ajedrez-columns">
+                <span class="ajedrex-columns-column">A</span>
+                <span class="ajedrex-columns-column">B</span>
+                <span class="ajedrex-columns-column">C</span>
+                <span class="ajedrex-columns-column">D</span>
+                <span class="ajedrex-columns-column">E</span>
+                <span class="ajedrex-columns-column">F</span>
+                <span class="ajedrex-columns-column">G</span>
+                <span class="ajedrex-columns-column">H</span>
+            </div>
+    
+        </section>
+    
+        <section class="ajedrez-options">
+                <button class="btn" data-modal="modalSaveGame" id="saveGame">Guardar</button>
+                <button class="btn" id="reset">Resetear</button>
+                <button class="btn" data-modal="modalLoadGame" id="cargar">Cargar</button>
+        </section>
+    
+        <article class="modal" id="modalSaveGame">
+            <div class="modal-header">
+                <h3 class="modal-title">Guardar Partida</h3>
+                <button class="modal-close">x</button>
+            </div>
+            <div class="modal-content">
+                <form class="form" name="Guardar">
+                    <h3 class="form-title">Guardar Partida</h3>
+    
+                    <label class="form-label" for="guardarNombre">Nombre Partida</label>
+                    <input type="text" class="form-input" id="guardarNombre" name="nombre" required minlength="3" maxlength="30" placeholder="Nombre">
+                    <small class="form-info">partidas con el mismo nombre seran sobreescritas</small>
+                    <button type="submit" class="btn">Guardar</button>
+                </form>
+            </div>
+        </article>
+    
+        <article class="modal" id="modalLoadGame">
+            <div class="modal-header">
+                <h3 class="modal-title">Cargar juego</h3>
+                <button class="modal-close">x</button>
+            </div>
+            <div class="modal-content">
+                <h3 class="list-title">Lista Partidas</h3>
+                    <section class="list">
+                        <!-- list saved games -->
+                    </section>
+            </div>
+        </article>
+    
+        <article class="modal" id="modalInformation">
+            <div class="modal-header">
+                <h3 class="modal-title">Información</h3>
+                <button class="modal-close">x</button>
+            </div>
+            <div class="modal-content">
+                <p class="modal-information"></p>
+            </div>
+        </article>
+    
+        <article class="modal" id="modalCoronacion">
+            <div class="modal-header">
+                <h3 class="modal-title">Peon Coronado</h3>
+                <button class="modal-close">x</button>
+            </div>
+            <div class="modal-content">
+                <form class="form" name="Coronar">
+                    <h3 class="form-title">Peon Coronado</h3>
+                    <input type="hidden" name="pieceId">
+    
+                    <label class="form-label" for="coronarNombre">Elije la Pieza a Convertir</label>
+                    <select name="nombre" id="coronarNombre" class="form-select">
+                        <option selected value="Reina">Reina</option>
+                        <option value="Torre">Torre</option>
+                        <option value="Caballo">Caballo</option>
+                        <option value="Alfil">Alfil</option>
+                    </select>
+                    <button type="submit" class="btn">Coronar</button>
+                </form>
+            </div>
+        </article>
+    
+    </main>
 
 
 

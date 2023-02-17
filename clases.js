@@ -134,69 +134,14 @@ class Piece {
 
             if(pieceInPosition.name === "Rey") {
               if(show) pieceInPosition.node.classList.add("jaque");
-              game.jaque.rey.push(pieceInPosition);
+              if(!game.jaque.rey.includes(pieceInPosition)) game.jaque.rey.push(pieceInPosition);
+              
               game.jaque.atacantes.push(piece);
             }
           }
        }
       }
     })
-  }
-}
-
-class Peon extends Piece {
-  constructor(table, isWhite, position) {
-    super(table, isWhite, position);
-    this.name = "Peon";
-    this.node = this.createNode();
-  }
-
-  getPossibles(show=true) {
-    let dobleValidation = true;
-    let list = [];
-
-    let indexX = this.listLetters.indexOf(this.position[0]);
-    let y = parseInt(this.position[1]);
-    let i = this.isWhite? 1: -1;
-
-    let pFront = `${this.listLetters[indexX]}${y + i}`;
-    let pKL = `${this.listLetters[(indexX - 1)]}${y + i}`;
-    let pKR = `${this.listLetters[(indexX + 1)]}${y + i}`;
-
-    
-    let front = helpers.getPieceByPosition(pFront);
-    let killLeft = helpers.getPieceByPosition(pKL);
-    let killright = helpers.getPieceByPosition(pKR);
-
-    if(!front) {
-      let square = this.table.querySelector(`[data-id=${pFront}]`);
-      if(square) list.push(pFront);
-    } else dobleValidation = false
-
-    if(killLeft){
-      if(killLeft.isWhite !== this.isWhite) list.push(pKL);
-    }
-    if(killright){
-      if(killright.isWhite !== this.isWhite) list.push(pKR);;
-    }
-
-    if(!dobleValidation) return list;
-
-    if(this.isWhite){
-      if(this.position[1] !== "2") return list;
-    }else{
-      if(this.position[1] !== "7") return list;
-    }
-
-
-    let doble = `${this.listLetters[indexX]}${y + (i * 2)}`;
-    let pieceDoble = helpers.getPieceByPosition(doble);
-    if(!pieceDoble) {
-      let square = this.table.querySelector(`[data-id=${doble}]`);
-      if(square) list.push(doble);
-    }
-
-    return list;
   }
 }
 
@@ -625,6 +570,104 @@ class Reina extends Piece {
     }
 
     return list;
+  }
+}
+
+class Peon extends Piece {
+  constructor(table, isWhite, position) {
+    super(table, isWhite, position);
+    this.name = "Peon";
+    this.node = this.createNode();
+  }
+
+  getPossibles(show=true) {
+    let dobleValidation = true;
+    let list = [];
+
+    let indexX = this.listLetters.indexOf(this.position[0]);
+    let y = parseInt(this.position[1]);
+    let i = this.isWhite? 1: -1;
+
+    let pFront = `${this.listLetters[indexX]}${y + i}`;
+    let pKL = `${this.listLetters[(indexX - 1)]}${y + i}`;
+    let pKR = `${this.listLetters[(indexX + 1)]}${y + i}`;
+
+    
+    let front = helpers.getPieceByPosition(pFront);
+    let killLeft = helpers.getPieceByPosition(pKL);
+    let killright = helpers.getPieceByPosition(pKR);
+
+    if(!front) {
+      let square = this.table.querySelector(`[data-id=${pFront}]`);
+      if(square) list.push(pFront);
+    } else dobleValidation = false
+
+    if(killLeft){
+      if(killLeft.isWhite !== this.isWhite) list.push(pKL);
+    }
+    if(killright){
+      if(killright.isWhite !== this.isWhite) list.push(pKR);;
+    }
+
+    if(!dobleValidation) return list;
+
+    if(this.isWhite){
+      if(this.position[1] !== "2") return list;
+    }else{
+      if(this.position[1] !== "7") return list;
+    }
+
+
+    let doble = `${this.listLetters[indexX]}${y + (i * 2)}`;
+    let pieceDoble = helpers.getPieceByPosition(doble);
+    if(!pieceDoble) {
+      let square = this.table.querySelector(`[data-id=${doble}]`);
+      if(square) list.push(doble);
+    }
+
+    return list;
+  }
+
+  move(position, show=true){
+    super.move(position);
+
+    if(!show) return;
+    let row = this.isWhite? "8": "1";
+    if(this.position[1] === row) this.prepareCoronar();
+  }
+
+  kill(enemy, show=true){
+    super.kill(enemy);
+
+    if(!show) return;
+    let row = this.isWhite? "8": "1";
+    if(this.position[1] === row) this.prepareCoronar();
+  }
+
+  prepareCoronar(){
+    document.forms.Coronar.pieceId.value = this.position;
+    helpers.showModal("modalCoronacion");
+  }
+
+  coronar(name="Reina"){
+    let listClass = {Torre, Alfil, Caballo, Reina}
+    let pieceClass = listClass[name];
+    if(!pieceClass) pieceClass = listClass.Reina;
+
+    let index = listPieces.findIndex(piece => piece === this);
+    if(index < 0) return helpers.showInfo("fallo coronacion");
+    
+    this.node.remove();
+    let newPiece = new pieceClass(this.table, this.isWhite, this.position);
+    listPieces[index] = newPiece;
+
+    let square = document.querySelector(`[data-id=${newPiece.position}]`);
+    if(!square) return helpers.showInfo("no se encontro cuadro "+newPiece.position);
+
+    square.appendChild(newPiece.node);
+    helpers.closeModal();
+
+    this.validJaque();
   }
 }
 

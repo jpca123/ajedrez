@@ -225,6 +225,11 @@ function loadGame(name) {
     if (e.target === resetBtn) resetGame();
 
     if(e.target.matches(".modal-close")){
+      console.log(e.target.parentElement.parentElement)
+      if(e.target.parentElement.parentElement.id === "modalCoronacion") {
+        console.log("coronacion por default")
+        document.forms.Coronar.requestSubmit();
+      }
       helpers.closeModal();
     }
 
@@ -276,10 +281,23 @@ function loadGame(name) {
 
 document.addEventListener("submit", e=>{
   e.preventDefault();
+  console.log(e)
 
-  let nameGame = e.target.name.value;
-  console.log("nombre partida", nameGame)
-  saveGame(nameGame);
-  helpers.closeModal();
-  e.target.reset();
+  if(e.target.name === "Guardar"){
+    let nameGame = e.target.nombre.value;
+    saveGame(nameGame);
+    helpers.closeModal();
+    e.target.reset();
+  }
+
+  if(e.target.name === "Coronar"){
+    let pieceName = e.target.nombre.value;
+    let position = e.target.pieceId.value;
+    let piece = helpers.getPieceByPosition(position);
+
+    if(!piece) return helpers.showInfo("fallo la coronacion");
+    piece.coronar(pieceName);
+    e.target.reset();
+  }
+
 })
