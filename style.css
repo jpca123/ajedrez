@@ -132,7 +132,7 @@ h1{
     border: solid thin var(--ligth-color);
     border-radius: .3em;
     align-items: center;
-    justify-content: space-between;
+    justify-content: space-around;
 }
 .list-item-btn-container{
     display: flex;
@@ -147,13 +147,14 @@ h1{
 
 
 .modal{
-    display: fixed;
-    position: absolute;
+    display: block;
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(34, 34, 34, 0.8);
+    padding: 1em;
+    background: rgba(0, 0, 0, .9);
     backdrop-filter: blur(3px);
     z-index: 30;
     overflow: hidden;
@@ -177,13 +178,30 @@ h1{
 }
 .modal-close{
     display: block;
+    position: relative;
+    width: 1.3em;
+    aspect-ratio: 1/1;
     margin: 0 1em;
-    padding: .3em;
     background-color: transparent;
-    color: var(--ligth-color);
+    color: inherit;
     border: none;
     font-size: 1.3em;
     cursor: pointer;
+}
+.modal-close::before, .modal-close::after{
+    position: absolute;
+    content: "";
+    top: 45%;
+    left: 0;
+    display: block;
+    width: 100%;
+    aspect-ratio: 10/1;
+    background-color: currentColor;
+    border-radius: 100vh;
+    transform: rotate(45deg);
+}
+.modal-close::after{
+    transform: rotate(-45deg);
 }
 .modal-close:hover{
     text-shadow: 0 0 .3em var(--dark-color);
@@ -196,8 +214,8 @@ h1{
     margin: 2em auto;
     padding: 1em;
     border-radius: .3em;
-    width: 70%;
-    height: 70%;
+    width: 60%;
+    min-height: 70%;
     line-height: 1.3;
     background-color: rgb(19, 19, 19);
     overflow-x: hidden;
@@ -349,14 +367,22 @@ h1{
 }
 
 .up-pieze{
-    transition: opacity .2s linear;
-    box-shadow: inset 0 0 .5em var(--color-posible);
+    transition: trnsform .2s linear;
+    text-shadow: inset 0 0 .5em var(--color-posible);
+    animation: .4s up-pieze linear infinite alternate;
 }
 .jaque{
-    background-color: var(--color-posible);
-    background-color: var(--danger-color);
+    box-shadow: inset 0 0 .5em var(--color-posible);
 }
 
+@keyframes up-pieze{
+    from{
+        transform: scale(1);
+    }
+    to{
+        transform: scale(1.3);
+    }
+}
 
 /********************* Responsive **********************/
 
@@ -364,6 +390,9 @@ h1{
 @media screen and (max-width: 1000px){
     html{
         font-size: 14px;
+    }
+    .modal-content{
+        width: 80%;
     }
 }
 
@@ -382,6 +411,13 @@ h1{
     .header-logo{
         text-align: center;
         flex-basis: 100%;
+    }
+    .modal-content{
+        width: 100%;
+    }
+    .list-item{
+        flex-wrap: wrap;
+        justify-content: space-around;
     }
 }
 

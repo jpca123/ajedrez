@@ -55,8 +55,8 @@ class Piece {
 
     let indexEnemy = listPieces.findIndex(piece => piece===enemy);
     listPieces.splice(indexEnemy, 1);  
-    this.validJaque();
     helpers.cleanUpPieze();
+    this.validJaque();
   }
 
   createNode() {
@@ -71,11 +71,11 @@ class Piece {
   }
 
   getPossibles(show=true) {
-    return ["C4", "C5", "C3", "D2"];
+    return [];
   }
 
   getValidPossibles(show=true){
-    let list = this.getPossibles(show);
+    let list = this.getPossibles(false);
     if(!list) return [];
     return list.filter(position => this.validateJaqueInPosible(position));
   }
@@ -104,23 +104,17 @@ class Piece {
     } 
 
     this.position = position;
-
     this.validJaque(false);
     if(pieceInSquare) pieceInSquare.position = pieceInSquarePosition;
     this.position = originalposition;
 
     if(game.jaque.rey.find(rey => rey.isWhite === this.isWhite)) return false;
 
-    game.jaque = {rey: [], atacantes: []};
     return true;
   }
 
   validJaque(show=true){
-    if (show) game.jaque.rey.forEach(piece=> {
-      piece.node.classList.remove("jaque");
-    })
     game.jaque.rey = [];
-    game.jaque.atacantes = [];
 
     listPieces.forEach(piece => {
       let possibles = piece.getPossibles(false);
@@ -133,15 +127,17 @@ class Piece {
           if(piece.isWhite !== pieceInPosition.isWhite){
 
             if(pieceInPosition.name === "Rey") {
-              if(show) pieceInPosition.node.classList.add("jaque");
-              if(!game.jaque.rey.includes(pieceInPosition)) game.jaque.rey.push(pieceInPosition);
-              
-              game.jaque.atacantes.push(piece);
+              if(!game.jaque.rey.includes(pieceInPosition)) game.jaque.rey.push(pieceInPosition);   
             }
           }
        }
       }
     })
+
+    if(show){
+      document.querySelectorAll(".jaque").forEach(rey => rey.classList.remove("jaque"));
+      game.jaque.rey.forEach(rey => rey.node.classList.add("jaque"));
+    }
   }
 }
 
@@ -437,6 +433,7 @@ class Rey extends Piece {
     
     if(enroque) enroque.torre.move(enroque.squareTorre);
     this.canEnroque = false;
+    this.validJaque();
   }
 }
 

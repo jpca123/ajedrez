@@ -105,7 +105,10 @@ export function validWinner(){
 }
 
 export function closeModal(){
-  let modal = document.querySelectorAll(".modal-active").forEach(modal => modal.classList.remove("modal-active"));
+  document.querySelectorAll(".modal-active").forEach(modal =>{
+    if(modal.id === "modalCoronacion") document.forms.Coronar.requestSubmit();
+    modal.classList.remove("modal-active");
+  })
 }
 
 export function showModal(name){
@@ -133,7 +136,7 @@ export function addSavedGame(games){
     btn.classList.add("btn", "list-item-btn-load");
     btnRemove.classList.add("btn", "btn-danger", "list-item-btn-remove");
 
-    item.textContent = game.name;
+    name.textContent = game.name;
     btn.textContent = "Cargar";
     btnRemove.textContent = "Eliminar";
     btn.dataset.name = game.name;

@@ -53,9 +53,8 @@ export let game = {
   whiteTurn: true,
   upPiece: null,
   jaque: {
-    rey: [],
-    atacantes: []
-  },
+    rey: []
+    },
 };
 
 export let listPieces = [];
@@ -80,7 +79,7 @@ export function resetGame() {
   helpers.cleanUpPieze();
   game.whiteTurn = true;
   game.upPiece = null;
-  game.jaque = {rey: [], atacantes:[]};
+  game.jaque = {rey: []};
   helpers.fixSetIndicator();
 
   return renderPieces(listPieces);
@@ -164,11 +163,17 @@ function saveGame(name) {
     name: name,
     game,
     pieces: listPieces.map(piece => {
-      return {
+      let obj = {
         name: piece.name,
         isWhite: piece.isWhite,
         position: piece.position
       }
+      if(piece.name ==="Rey" || piece.name === "Torre") {
+
+        obj.canEnroque = piece.canEnroque;
+        console.log(piece)
+      }
+      return obj;
     }),
   };
 
@@ -181,10 +186,12 @@ function saveGame(name) {
   // validadate games with same name
   let sameNameGame = listGames.findIndex((game) => game.name === name);
 
-  listGames.splice(sameNameGame, 1)
+  if(sameNameGame > -1) listGames.splice(sameNameGame, 1)
   listGames.push(objectGame);
   localStorage.setItem("Games", JSON.stringify(listGames));
-  helpers.addSavedGame([objectGame]);
+  
+  if(sameNameGame === -1) helpers.addSavedGame([objectGame]);
+  localStorage.setItem("Games", JSON.stringify(listGames));
   resetGame();
   helpers.closeModal();
 }
@@ -202,9 +209,11 @@ function loadGame(name) {
   game = loadGame.game;
   listPieces.forEach(piece => piece.node.remove());
   listPieces = loadGame.pieces.map(
-    (piece) =>
-      new piecesClass[piece.name](table, piece.isWhite, piece.position)
-  );
+    (piece) =>{
+      let obj = new piecesClass[piece.name](table, piece.isWhite, piece.position)
+      if(obj.name === "Rey" || obj.name==="Torre") obj.canEnroque = piece.canEnroque;
+      return obj;
+    });
 
   helpers.fixSetIndicator();
   return renderPieces(listPieces);
@@ -225,9 +234,7 @@ function loadGame(name) {
     if (e.target === resetBtn) resetGame();
 
     if(e.target.matches(".modal-close")){
-      console.log(e.target.parentElement.parentElement)
       if(e.target.parentElement.parentElement.id === "modalCoronacion") {
-        console.log("coronacion por default")
         document.forms.Coronar.requestSubmit();
       }
       helpers.closeModal();
@@ -281,7 +288,6 @@ function loadGame(name) {
 
 document.addEventListener("submit", e=>{
   e.preventDefault();
-  console.log(e)
 
   if(e.target.name === "Guardar"){
     let nameGame = e.target.nombre.value;
