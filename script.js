@@ -168,11 +168,8 @@ function saveGame(name) {
         isWhite: piece.isWhite,
         position: piece.position
       }
-      if(piece.name ==="Rey" || piece.name === "Torre") {
-
-        obj.canEnroque = piece.canEnroque;
-        console.log(piece)
-      }
+      if(piece.name ==="Rey" || piece.name === "Torre") obj.canEnroque = piece.canEnroque;
+      if(piece.name ==="Peon") obj.dobleJump = piece.dobleJump;
       return obj;
     }),
   };
@@ -197,10 +194,11 @@ function saveGame(name) {
 }
 
 function loadGame(name) {
+  helpers.cleanUpPieze();
   let games = localStorage.getItem("Games");
   let listGames;
   if (games) listGames = JSON.parse(games);
-  else return alert("aun no hay partidas guardadas");
+  else return helpers.showInfo("aún no hay partidas guardadas");
 
   let loadGame = listGames.find((game) => game.name === name);
 
@@ -212,6 +210,7 @@ function loadGame(name) {
     (piece) =>{
       let obj = new piecesClass[piece.name](table, piece.isWhite, piece.position)
       if(obj.name === "Rey" || obj.name==="Torre") obj.canEnroque = piece.canEnroque;
+      if(obj.name === "Peon") obj.dobleJump = piece.dobleJump;
       return obj;
     });
 

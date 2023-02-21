@@ -26,10 +26,17 @@ class Piece {
     this.listLetters = ["A", "B", "C", "D", "E", "F", "G", "H"];
   }
 
+  quitKillWay(){
+    listPieces.forEach(piece=>{
+      if(piece !== this && this.isWhite === piece.isWhite && piece.name==="Peon") piece.dobleJump=false
+    })
+  }
+
   move(position){
     if (!helpers.validateTurn(this)) {
       return helpers.cleanUpPieze();
     }
+    this.quitKillWay();
 
     let cuadro = document.querySelector(`[data-id=${position}]`);
   
@@ -100,7 +107,7 @@ class Piece {
 
     if(pieceInSquare) {
       pieceInSquarePosition = pieceInSquare.position;
-      pieceInSquare.position = "--";
+      pieceInSquare.position = "";
     } 
 
     this.position = position;
@@ -347,7 +354,7 @@ class Rey extends Piece {
   getPossibles(show=true) {
     let x, y, listPositions, list;
     listPositions = list = [];
-
+    if(this.position === null) console.log(this, )
     x = this.listLetters.indexOf(this.position[0]);
     y = parseInt(this.position[1]);
 
@@ -361,14 +368,13 @@ class Rey extends Piece {
     listPositions.push(`${this.listLetters[x + 1]}${y + 1}`);
 
     list = listPositions.filter(position => this.validatePosition(position));
-    list.push(...this.getPossibleEnroque(show));
-    
     return list;
   }
 
   getPossibleEnroque(show=true){
     if(show) this.listPossiblesEnroques = [];
 
+    // if this has jaque return []
     if(game.jaque.rey.find(piece => piece===this )) return [];
 
     let list = [];
@@ -377,17 +383,19 @@ class Rey extends Piece {
     let positionTorreLargue = this.isWhite? "A1": "A8";
     let torreLargue = helpers.getPieceByPosition(positionTorreLargue);
 
+    // validate enroque
     if(this.canEnroque){
       let validation = true;
       let positionMiddle1 = this.isWhite? "F1": "F8";
       let positionMiddle2 = this.isWhite? "G1": "G8";
       let middle1 = helpers.getPieceByPosition(positionMiddle1);
       let middle2 = helpers.getPieceByPosition(positionMiddle2);
-
-
+      
       if(!torre || !torre.canEnroque) validation = false;
-
+      
       if(middle1 || middle2) validation = false;
+      
+      if(!this.validateJaqueInPosible(positionMiddle1) || !this.validateJaqueInPosible(positionMiddle2)) validation = false;
 
       if(validation) {
         let objectEnroque = {
@@ -399,7 +407,8 @@ class Rey extends Piece {
         list.push(objectEnroque.square);
       }
     }
-
+    
+    // validate largue enroque
     if(this.canEnroque){
       let validation = true;
       let positionMiddle1 = this.isWhite? "D1": "D8";
@@ -409,10 +418,11 @@ class Rey extends Piece {
       let middle2 = helpers.getPieceByPosition(positionMiddle2);
       let middle3 = helpers.getPieceByPosition(positionMiddle3);
 
-
       if(!torreLargue || !torreLargue.canEnroque) validation = false;
-
+      
       if(middle1 || middle2 || middle3) validation = false;
+
+      if(!this.validateJaqueInPosible(positionMiddle1) || !this.validateJaqueInPosible(positionMiddle2) || !this.validateJaqueInPosible(positionMiddle3)) validation = false;
 
       if(validation) {
         let objectEnroque = {
@@ -424,6 +434,12 @@ class Rey extends Piece {
         list.push(objectEnroque.square);
       }
     }
+    return list;
+  }
+
+  getValidPossibles(show=true){
+    let list = super.getValidPossibles(false);
+    list.push(...this.getPossibleEnroque());
     return list;
   }
 
@@ -575,6 +591,7 @@ class Peon extends Piece {
     super(table, isWhite, position);
     this.name = "Peon";
     this.node = this.createNode();
+    this.dobleJump = false;
   }
 
   getPossibles(show=true) {
@@ -585,6 +602,7 @@ class Peon extends Piece {
     let y = parseInt(this.position[1]);
     let i = this.isWhite? 1: -1;
 
+    // p=position
     let pFront = `${this.listLetters[indexX]}${y + i}`;
     let pKL = `${this.listLetters[(indexX - 1)]}${y + i}`;
     let pKR = `${this.listLetters[(indexX + 1)]}${y + i}`;
@@ -592,7 +610,7 @@ class Peon extends Piece {
     
     let front = helpers.getPieceByPosition(pFront);
     let killLeft = helpers.getPieceByPosition(pKL);
-    let killright = helpers.getPieceByPosition(pKR);
+    let killRight = helpers.getPieceByPosition(pKR);
 
     if(!front) {
       let square = this.table.querySelector(`[data-id=${pFront}]`);
@@ -600,12 +618,24 @@ class Peon extends Piece {
     } else dobleValidation = false
 
     if(killLeft){
+      // if there are a piece in the position
       if(killLeft.isWhite !== this.isWhite) list.push(pKL);
-    }
-    if(killright){
-      if(killright.isWhite !== this.isWhite) list.push(pKR);;
+    }else{
+      // else then validation  kill in the way
+      let pieceLeft = helpers.getPieceByPosition(`${pKL[0]}${y}`);
+      if(pieceLeft && pieceLeft.name === "Peon" && pieceLeft.dobleJump && pieceLeft.isWhite !== this.isWhite) list.push(pKL);
     }
 
+
+    if(killRight){
+      if(killRight.isWhite !== this.isWhite) list.push(pKR);;
+    }else{
+      // else then validation  kill in the way
+      let pieceRight = helpers.getPieceByPosition(`${pKR[0]}${y}`);
+      if(pieceRight && pieceRight.name === "Peon" && pieceRight.dobleJump && pieceRight.isWhite !== this.isWhite) list.push(pKR);
+    }
+
+    // validate for not create kill in doble jump
     if(!dobleValidation) return list;
 
     if(this.isWhite){
@@ -614,21 +644,45 @@ class Peon extends Piece {
       if(this.position[1] !== "7") return list;
     }
 
-
+    // position doble jump
     let doble = `${this.listLetters[indexX]}${y + (i * 2)}`;
     let pieceDoble = helpers.getPieceByPosition(doble);
     if(!pieceDoble) {
       let square = this.table.querySelector(`[data-id=${doble}]`);
       if(square) list.push(doble);
     }
-
+    if(show)console.log(list);
     return list;
   }
 
-  move(position, show=true){
-    super.move(position);
+  setDobleJump(position){
+    let row = this.isWhite? "4": "5";
+    if(position[1] !== row) return this.dobleJump = false;
 
+    let beforeRow = this.isWhite? "2": "7";
+    if(beforeRow === this.position[1]) return this.dobleJump = true;
+    this.dobleJump = false;
+  }
+
+  validKillWay(position){
+    let direction = this.isWhite? 1: -1;
+    let positionPeonUp = `${position[0]}${parseInt(position[1]) - direction}`;
+    let peonUp = helpers.getPieceByPosition(positionPeonUp);
+
+    console.log(positionPeonUp)
+
+    if(peonUp && peonUp.name==="Peon" && peonUp.isWhite !== this.isWhite && peonUp.dobleJump) this.kill(peonUp);    
+  }
+
+  move(position, show=true){
+    this.setDobleJump(position);
+    // validate kill to way
+    if(show) this.validKillWay(position);
+
+
+    super.move(position);
     if(!show) return;
+
     let row = this.isWhite? "8": "1";
     if(this.position[1] === row) this.prepareCoronar();
   }
