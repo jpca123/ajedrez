@@ -30,7 +30,6 @@ class Piece {
     if (!helpers.validateTurn(this)) return helpers.cleanUpPieze();
 
     this.node.classList.add("up-pieze");
-    // let posibles = this.getPossibles();
     let posibles = this.getValidPossibles();
     game.upPiece = this;
     helpers.markPossibles(posibles);
@@ -677,7 +676,6 @@ class Peon extends Piece {
     let positionPeonUp = `${position[0]}${parseInt(position[1]) - direction}`;
     let peonUp = helpers.getPieceByPosition(positionPeonUp);
 
-
     if(peonUp && peonUp.name==="Peon" && peonUp.isWhite !== this.isWhite && peonUp.dobleJump) this.kill(peonUp);    
   }
 
@@ -695,6 +693,7 @@ class Peon extends Piece {
   }
 
   kill(enemy, show=true){
+    if(show) this.validKillWay(enemy.position);
     super.kill(enemy);
 
     if(!show) return;

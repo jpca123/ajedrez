@@ -11,7 +11,7 @@
     --dark-color: rgb(32 126 163);
     --bg-color: rgb(25, 26, 26);
     --color-posible: rgb(110, 11, 11);
-    --width-game: min(85vh, 85vw);
+    --width-game: min(90vh, calc(100vw - 2rem));
     --danger-color: rgb(255, 41, 41);
 }
 
@@ -270,41 +270,6 @@ h1{
     flex-wrap: wrap;
 }
 
-.header{
-    display: flex;
-    padding: .5em 1em;
-    overflow: hidden;
-    align-items: center;
-    justify-content: space-around;
-    gap: 1em 0;
-}
-.header .form-select{
-    margin-left: 1em;
-}
-.header-logo{
-    display: block;
-    font-size: 1.3em;
-    text-transform: capitalize;
-    text-decoration: none;
-    color: inherit;
-    font-weight: bold;
-}
-.header-section{
-    display: flex;
-    align-items: center;
-}
-.header-section-turno{
-    --turno-color: var(var(--ligth-color));
-    display: block;
-    margin: auto .5em;
-    width: 1.5em;
-    aspect-ratio: 1/1;
-    border-radius: 100vh;
-    background-color: var(--turno-color, var(--ligth-color));
-    transition: background-color .2s linear;
-}
-
-
 .tablero{
     position: relative;
     display: grid;
@@ -375,6 +340,43 @@ h1{
 .jaque{
     box-shadow: inset 0 0 .5em var(--color-posible);
 }
+
+
+.header{
+    display: flex;
+    padding: .5em 1em;
+    overflow: hidden;
+    align-items: center;
+    justify-content: space-around;
+    gap: 1em 0;
+}
+.header .form-select{
+    margin-left: 1em;
+}
+.header-logo{
+    display: block;
+    font-size: 1.3em;
+    text-transform: capitalize;
+    text-decoration: none;
+    color: inherit;
+    font-weight: bold;
+}
+.header-section{
+    display: flex;
+    align-items: center;
+}
+.header-section-turno{
+    --turno-color: var(var(--ligth-color));
+    display: block;
+    margin: auto .5em;
+    width: 1.5em;
+    aspect-ratio: 1/1;
+    border-radius: 100vh;
+    background-color: var(--turno-color, var(--ligth-color));
+    transition: background-color .2s linear;
+}
+
+
 
 @keyframes up-pieze{
     from{
