@@ -30,11 +30,12 @@ h1{
 .btn{
     display: block;
     padding: .5em 1em;
-    margin: 0 auto;
+    margin: .5em auto;
     border-radius: 100vh;
     background-color: transparent;
     color: var(--ligth-color);
     border: solid .1em var(--ligth-color);
+    outline: none;
     color: inherit;
     cursor: pointer;
     transition: .2s linear;

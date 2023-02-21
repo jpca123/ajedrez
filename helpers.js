@@ -84,21 +84,20 @@ export function fixSetIndicator() {
 }
 
 export function validWinner(){
-  let counter=0;
   let whiteTurn = game.whiteTurn;
   let win = true;
 
   for(let piece of listPieces){
-    if(!win) break;
+    // if(!win) break;
     
     if(whiteTurn !== piece.isWhite) continue;
     let posibles = piece.getValidPossibles();
-    if(posibles.length === 0) counter++;
     if(posibles.length > 0) win = false;
   }
 
   if(win){
-    let winners = whiteTurn? "Negras": "blancas"
+    let winners = whiteTurn? "Negras": "blancas";
+    if(!document.querySelector(".jaque")) return showInfo(`No hay movimientos posibles la partida termina en <b>Tablas</b> o empate`, "Tablas");
 
     return showInfo(`Las ${winners} han dado <b>Jaque Mate</b> y han Ganado la partida`, "Jaque Mate");
   }

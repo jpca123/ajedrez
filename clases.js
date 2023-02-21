@@ -26,6 +26,16 @@ class Piece {
     this.listLetters = ["A", "B", "C", "D", "E", "F", "G", "H"];
   }
 
+  up(){
+    if (!helpers.validateTurn(this)) return helpers.cleanUpPieze();
+
+    this.node.classList.add("up-pieze");
+    // let posibles = this.getPossibles();
+    let posibles = this.getValidPossibles();
+    game.upPiece = this;
+    helpers.markPossibles(posibles);
+  }
+
   quitKillWay(){
     listPieces.forEach(piece=>{
       if(piece !== this && this.isWhite === piece.isWhite && piece.name==="Peon") piece.dobleJump=false
@@ -354,7 +364,6 @@ class Rey extends Piece {
   getPossibles(show=true) {
     let x, y, listPositions, list;
     listPositions = list = [];
-    if(this.position === null) console.log(this, )
     x = this.listLetters.indexOf(this.position[0]);
     y = parseInt(this.position[1]);
 
@@ -651,7 +660,6 @@ class Peon extends Piece {
       let square = this.table.querySelector(`[data-id=${doble}]`);
       if(square) list.push(doble);
     }
-    if(show)console.log(list);
     return list;
   }
 
@@ -669,7 +677,6 @@ class Peon extends Piece {
     let positionPeonUp = `${position[0]}${parseInt(position[1]) - direction}`;
     let peonUp = helpers.getPieceByPosition(positionPeonUp);
 
-    console.log(positionPeonUp)
 
     if(peonUp && peonUp.name==="Peon" && peonUp.isWhite !== this.isWhite && peonUp.dobleJump) this.kill(peonUp);    
   }

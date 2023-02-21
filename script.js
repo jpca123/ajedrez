@@ -6,6 +6,7 @@ import { Peon, Torre, Alfil, Caballo, Rey, Reina } from "./clases.js";
 
 const saveGameBtn = document.getElementById("saveGame");
 const resetBtn = document.getElementById("reset");
+const btnDeleteAll = document.getElementById("delete-all-games");
 const colorInput = document.getElementById("colorInput");
 const loadBtn = document.getElementById("cargar");
 export let table = document.getElementById("tablero");
@@ -61,18 +62,6 @@ export let listPieces = [];
 
 // ************************* Functions ****************
 
-// set the up piece an show choose scuares
-function toUpPiece(piece) {
-  if (!helpers.validateTurn(piece)) return helpers.cleanUpPieze();
-
-  piece.node.classList.add("up-pieze");
-  // let posibles = piece.getPossibles();
-  let posibles = piece.getValidPossibles();
-  game.upPiece = piece;
-  helpers.markPossibles(posibles);
-}
-
-
 export function resetGame() {
   listPieces.forEach(piece => piece.node.remove());
   listPieces = Array.from(initialPieces).map(piece => new piecesClass[piece.name](table, piece.isWhite, piece.position));
@@ -93,7 +82,7 @@ function pulsePiece(pieceNode) {
   if (!piece) return helpers.cleanUpPieze();
 
   // levantar ficha para mostrar opciones
-  if (game.upPiece === null) return toUpPiece(piece);
+  if (game.upPiece === null) return piece.up();
 
   // si intenta mover a un cuadro no permitido
   if (!piece.node.parentElement.classList.contains("posible-cuadro")) {
@@ -156,6 +145,15 @@ function removeGame(name){
   if(!btn) return helpers.showInfo(`No se encontro en la lista la partida <b>${game}</b>`, "Advertencia al remover partida");
 
   btn.parentElement.parentElement.remove();
+}
+
+function removeAllGames(){
+  localStorage.setItem("Games", JSON.stringify([]));
+  let list = document.querySelector("#modalLoadGame .list");
+  if(!list) return helpers.showInfo("Falló al remover partidas <br> prueba recargar la pagina", "Error");
+
+
+  list.innerHTML = "";
 }
 
 function saveGame(name) {
@@ -257,6 +255,8 @@ function loadGame(name) {
       removeGame(nameGame);
       helpers.closeModal();
     }
+
+    if(e.target === btnDeleteAll) removeAllGames();
 
   });
 
