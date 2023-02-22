@@ -5,7 +5,7 @@ let files = [
     "./helpers.js",
     "./clases.js",
     "./assets/programming.ico",
-    "./manifet.json"
+    "./manifest.json"
 ];
 let cacheName = "V1";
 
