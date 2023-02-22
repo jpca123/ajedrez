@@ -6,8 +6,25 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ajedres</title>
-    <!-- <link rel="icon" href="https://image.freepik.com/vector-gratis/logo-piezas-ajedrez_1043-238.jpg"> -->
+
+    <!-- Meta Etiquetas de PWA -->
+
+    <meta name="theme-color" content="rgb(0, 119, 255)"> <!-- color barra de busqueda -->
+    <meta name="MobileOptimized" content="width">
+    <meta name="HandheldFriendly" content="true">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- color de el encabezado de la pwa -->
+
+    <link rel="shortcut icon" type="image/ico" href="./assets/programming.ico"> <!-- icono de aplicacion -->
+    <link rel="apple-touch-icon" href="./assets/programming.ico"> <!-- icono de aplicacion en lista apps -->
+    <link rel="apple-touch-startup-image" href="./assets/programming.ico">
+    <!-- icono de aplicacion en loading de la pwa-->
+    <link rel="manifest" href="./manifest.json"> <!-- url de el archivo manifest.json -->
+
+    <!-- fin Meta Etiquetas -->
     <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="./assets/programming.ico">
 </head>
 
 <body>
@@ -46,7 +63,7 @@
                 <span class="ajedrex-cols-col">2</span>
                 <span class="ajedrex-cols-col">1</span>
             </div>
-    
+
             <div class="tablero" id="tablero">
                 <section class="juego-fila fila-par">
                     <div class="juego-cuadro" data-id="A8"></div>
@@ -129,7 +146,7 @@
                     <div class="juego-cuadro" data-id="H1"></div>
                 </section>
             </div>
-    
+
             <div class="ajedrez-columns">
                 <span class="ajedrex-columns-column">A</span>
                 <span class="ajedrex-columns-column">B</span>
@@ -140,15 +157,15 @@
                 <span class="ajedrex-columns-column">G</span>
                 <span class="ajedrex-columns-column">H</span>
             </div>
-    
+
         </section>
-    
+
         <section class="ajedrez-options">
-                <button class="btn" data-modal="modalSaveGame" id="saveGame">Guardar</button>
-                <button class="btn" id="reset">Reiniciar</button>
-                <button class="btn" data-modal="modalLoadGame" id="cargar">Cargar</button>
+            <button class="btn" data-modal="modalSaveGame" id="saveGame">Guardar</button>
+            <button class="btn" id="reset">Reiniciar</button>
+            <button class="btn" data-modal="modalLoadGame" id="cargar">Cargar</button>
         </section>
-    
+
         <article class="modal" id="modalSaveGame">
             <div class="modal-header">
                 <h3 class="modal-title">Guardar Partida</h3>
@@ -157,15 +174,16 @@
             <div class="modal-content">
                 <form class="form" name="Guardar">
                     <h3 class="form-title">Guardar Partida</h3>
-    
+
                     <label class="form-label" for="guardarNombre">Nombre Partida</label>
-                    <input type="text" class="form-input" id="guardarNombre" name="nombre" required minlength="3" maxlength="30" placeholder="Nombre">
+                    <input type="text" class="form-input" id="guardarNombre" name="nombre" required minlength="3"
+                        maxlength="30" placeholder="Nombre">
                     <small class="form-info">partidas con el mismo nombre seran sobreescritas</small>
                     <button type="submit" class="btn">Guardar</button>
                 </form>
             </div>
         </article>
-    
+
         <article class="modal" id="modalLoadGame">
             <div class="modal-header">
                 <h3 class="modal-title">Cargar juego</h3>
@@ -173,13 +191,14 @@
             </div>
             <div class="modal-content">
                 <h3 class="list-title">Lista Partidas</h3>
-                <p>Borrar todas las partidas <button class="btn btn-danger" id="delete-all-games">Borrar todas</button></p>
-                    <section class="list">
-                        <!-- list saved games -->
-                    </section>
+                <p>Borrar todas las partidas <button class="btn btn-danger" id="delete-all-games">Borrar todas</button>
+                </p>
+                <section class="list">
+                    <!-- list saved games -->
+                </section>
             </div>
         </article>
-    
+
         <article class="modal" id="modalInformation">
             <div class="modal-header">
                 <h3 class="modal-title">Información</h3>
@@ -189,7 +208,7 @@
                 <p class="modal-information"></p>
             </div>
         </article>
-    
+
         <article class="modal" id="modalCoronacion">
             <div class="modal-header">
                 <h3 class="modal-title">Peon Coronado</h3>
@@ -199,7 +218,7 @@
                 <form class="form" name="Coronar">
                     <h3 class="form-title">Peon Coronado</h3>
                     <input type="hidden" name="pieceId">
-    
+
                     <label class="form-label" for="coronarNombre">Elije la Pieza a Convertir</label>
                     <select name="nombre" id="coronarNombre" class="form-select">
                         <option selected value="Reina">Reina</option>
@@ -212,7 +231,7 @@
             </div>
         </article>
 
-    
+
     </main>
 
 

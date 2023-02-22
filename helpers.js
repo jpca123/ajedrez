@@ -98,7 +98,6 @@ export function validWinner(){
       showInfo(`EL rey ${colorRey} ha quedado solo, a partir de ahora inicia la cuenta de 50 jugadas para dar mate, de lo contrario la partida quedará en tablas`); 
       game.reySolo.solo = true;
     }
-    console.log(game.reySolo)
   }
 
   if(listPieces.length === 2) {

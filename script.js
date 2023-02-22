@@ -12,7 +12,7 @@ const loadBtn = document.getElementById("cargar");
 export let table = document.getElementById("tablero");
 
 // ************************* Game Variables ****************
-let piecesClass = {Torre, Caballo, Alfil, Reina, Rey, Peon};
+let piecesClass = { Torre, Caballo, Alfil, Reina, Rey, Peon };
 export let initialPieces = [
   new Torre(table, true, "A1"),
   new Caballo(table, true, "B1"),
@@ -55,7 +55,7 @@ export let game = {
   upPiece: null,
   jaque: [],
   winner: false,
-  reySolo: {solo: false, rey: null, count: 50}
+  reySolo: { solo: false, rey: null, count: 50 },
 };
 
 export let listPieces = [];
@@ -63,15 +63,17 @@ export let listPieces = [];
 // ************************* Functions ****************
 
 export function resetGame() {
-  listPieces.forEach(piece => piece.node.remove());
-  listPieces = Array.from(initialPieces).map(piece => new piecesClass[piece.name](table, piece.isWhite, piece.position));
+  listPieces.forEach((piece) => piece.node.remove());
+  listPieces = Array.from(initialPieces).map(
+    (piece) => new piecesClass[piece.name](table, piece.isWhite, piece.position)
+  );
   helpers.cleanUpPieze();
   game.whiteTurn = true;
   game.upPiece = null;
   game.jaque = [];
   game.winner = false;
-  game.reySolo = {solo: false, rey: null, count: 50};
-  
+  game.reySolo = { solo: false, rey: null, count: 50 };
+
   helpers.fixSetIndicator();
 
   return renderPieces(listPieces);
@@ -102,9 +104,9 @@ function pulsePiece(pieceNode) {
 function pulseEmpthyPossibleSquare(cuadro) {
   // mover pieza
   let position = cuadro.dataset.id;
-  let piece = helpers.getPieceByPosition(position)
+  let piece = helpers.getPieceByPosition(position);
   // if (piece) movePiece(game.upPiece, position);
-  if(!piece) {
+  if (!piece) {
     game.upPiece.move(position);
     helpers.changeTurn();
     helpers.validWinner();
@@ -123,7 +125,7 @@ function pulseEmpthyImpossibleSquare(square) {
 
 // render all list pieces in table
 function renderPieces(pieces) {
-  listPieces.forEach(piece => piece.node.remove());
+  listPieces.forEach((piece) => piece.node.remove());
   pieces.forEach((piece) => {
     let place = document.querySelector(`[data-id="${piece.position}"]`);
     let element = piece.node;
@@ -132,29 +134,40 @@ function renderPieces(pieces) {
   });
 }
 
-function removeGame(name){
+function removeGame(name) {
   let games = localStorage.getItem("Games");
   let listGames;
   if (games) listGames = JSON.parse(games);
   else listGames = [];
 
-  let gameRemove = listGames.findIndex(game => game.name === name);
-  if(gameRemove < 0) return helpers.showInfo(`No se encontro partida <b>${game}</b>`, "Error al remover partida");
+  let gameRemove = listGames.findIndex((game) => game.name === name);
+  if (gameRemove < 0)
+    return helpers.showInfo(
+      `No se encontro partida <b>${game}</b>`,
+      "Error al remover partida"
+    );
 
   listGames.splice(gameRemove, 1);
   localStorage.setItem("Games", JSON.stringify(listGames));
 
   let btn = document.querySelector(`[data-name=${name}]`);
-  if(!btn) return helpers.showInfo(`No se encontro en la lista la partida <b>${game}</b>`, "Advertencia al remover partida");
+  if (!btn)
+    return helpers.showInfo(
+      `No se encontro en la lista la partida <b>${game}</b>`,
+      "Advertencia al remover partida"
+    );
 
   btn.parentElement.parentElement.remove();
 }
 
-function removeAllGames(){
+function removeAllGames() {
   localStorage.setItem("Games", JSON.stringify([]));
   let list = document.querySelector("#modalLoadGame .list");
-  if(!list) return helpers.showInfo("Falló al remover partidas <br> prueba recargar la pagina", "Error");
-
+  if (!list)
+    return helpers.showInfo(
+      "Falló al remover partidas <br> prueba recargar la pagina",
+      "Error"
+    );
 
   list.innerHTML = "";
 }
@@ -163,32 +176,33 @@ function saveGame(name) {
   let objectGame = {
     name: name,
     game,
-    pieces: listPieces.map(piece => {
+    pieces: listPieces.map((piece) => {
       let obj = {
         name: piece.name,
         isWhite: piece.isWhite,
-        position: piece.position
-      }
-      if(piece.name ==="Rey" || piece.name === "Torre") obj.canEnroque = piece.canEnroque;
-      if(piece.name ==="Peon") obj.dobleJump = piece.dobleJump;
+        position: piece.position,
+      };
+      if (piece.name === "Rey" || piece.name === "Torre")
+        obj.canEnroque = piece.canEnroque;
+      if (piece.name === "Peon") obj.dobleJump = piece.dobleJump;
       return obj;
     }),
   };
 
   let listGames = JSON.parse(localStorage.getItem("Games"));
   if (!listGames) {
-    localStorage.setItem("Games", JSON.stringify([]))
+    localStorage.setItem("Games", JSON.stringify([]));
     listGames = [];
-  };
+  }
 
   // validadate games with same name
   let sameNameGame = listGames.findIndex((game) => game.name === name);
 
-  if(sameNameGame > -1) listGames.splice(sameNameGame, 1)
+  if (sameNameGame > -1) listGames.splice(sameNameGame, 1);
   listGames.push(objectGame);
   localStorage.setItem("Games", JSON.stringify(listGames));
-  
-  if(sameNameGame === -1) helpers.addSavedGame([objectGame]);
+
+  if (sameNameGame === -1) helpers.addSavedGame([objectGame]);
   localStorage.setItem("Games", JSON.stringify(listGames));
   resetGame();
   helpers.closeModal();
@@ -203,109 +217,116 @@ function loadGame(name) {
 
   let loadGame = listGames.find((game) => game.name === name);
 
-  if (!loadGame) return helpers.showInfo(`No se encontro la partida <b>${name}</b>`, "No encontrado");
+  if (!loadGame)
+    return helpers.showInfo(
+      `No se encontro la partida <b>${name}</b>`,
+      "No encontrado"
+    );
 
   game = loadGame.game;
-  listPieces.forEach(piece => piece.node.remove());
-  listPieces = loadGame.pieces.map(
-    (piece) =>{
-      let obj = new piecesClass[piece.name](table, piece.isWhite, piece.position)
-      if(obj.name === "Rey" || obj.name==="Torre") obj.canEnroque = piece.canEnroque;
-      if(obj.name === "Peon") obj.dobleJump = piece.dobleJump;
-      return obj;
-    });
+  listPieces.forEach((piece) => piece.node.remove());
+  listPieces = loadGame.pieces.map((piece) => {
+    let obj = new piecesClass[piece.name](table, piece.isWhite, piece.position);
+    if (obj.name === "Rey" || obj.name === "Torre")
+      obj.canEnroque = piece.canEnroque;
+    if (obj.name === "Peon") obj.dobleJump = piece.dobleJump;
+    return obj;
+  });
 
   helpers.fixSetIndicator();
   return renderPieces(listPieces);
 }
 
-  // ************************* DOM Events ****************
+// ************************* DOM Events ****************
 
-  document.addEventListener("click", (e) => {
-    // square with piece
-    if (e.target.matches(".juego-ficha")) pulsePiece(e.target);
+document.addEventListener("click", (e) => {
+  // square with piece
+  if (e.target.matches(".juego-ficha")) pulsePiece(e.target);
 
-    //  possible square whithout piece
-    if (e.target.matches(".posible-cuadro")) pulseEmpthyPossibleSquare(e.target);
+  //  possible square whithout piece
+  if (e.target.matches(".posible-cuadro")) pulseEmpthyPossibleSquare(e.target);
 
-    // not possible square without piece
-    if (e.target.matches(".juego-cuadro")) pulseEmpthyImpossibleSquare();
+  // not possible square without piece
+  if (e.target.matches(".juego-cuadro")) pulseEmpthyImpossibleSquare();
 
-    if (e.target === resetBtn) resetGame();
+  if (e.target === resetBtn) resetGame();
 
-    if(e.target.matches(".modal-close")){
-      if(e.target.parentElement.parentElement.id === "modalCoronacion") {
-        document.forms.Coronar.requestSubmit();
-      }
-      helpers.closeModal();
+  if (e.target.matches(".modal-close")) {
+    if (e.target.parentElement.parentElement.id === "modalCoronacion") {
+      document.forms.Coronar.requestSubmit();
     }
+    helpers.closeModal();
+  }
 
-    if(e.target.matches("[data-modal]")){
-      let idModal = e.target.dataset.modal;
-      if(!idModal) return console.log('no se encontro modal', e.target);
+  if (e.target.matches("[data-modal]")) {
+    let idModal = e.target.dataset.modal;
+    if (!idModal) return console.log("no se encontro modal", e.target);
 
-      helpers.showModal(idModal);
-    }
+    helpers.showModal(idModal);
+  }
 
-    if(e.target.matches(".list-item-btn-load")){
-      let nameGame = e.target.dataset.name || "N/A";
-      loadGame(nameGame);
-      helpers.closeModal();
-    }
+  if (e.target.matches(".list-item-btn-load")) {
+    let nameGame = e.target.dataset.name || "N/A";
+    loadGame(nameGame);
+    helpers.closeModal();
+  }
 
-    if(e.target.matches(".list-item-btn-remove")){
-      let nameGame = e.target.dataset.name || "N/A";
-      removeGame(nameGame);
-      helpers.closeModal();
-    }
+  if (e.target.matches(".list-item-btn-remove")) {
+    let nameGame = e.target.dataset.name || "N/A";
+    removeGame(nameGame);
+    helpers.closeModal();
+  }
 
-    if(e.target === btnDeleteAll) removeAllGames();
+  if (e.target === btnDeleteAll) removeAllGames();
+});
 
-  });
+document.addEventListener("DOMContentLoaded", (e) => {
+  resetGame();
+  renderPieces(listPieces);
 
-  document.addEventListener("DOMContentLoaded", (e) => {
-    resetGame();
-    renderPieces(listPieces);
+  let games = localStorage.getItem("Games");
+  let listGames;
+  if (games) listGames = JSON.parse(games);
+  else listGames = [];
 
-    let games = localStorage.getItem("Games");
-    let listGames;
-    if (games) listGames = JSON.parse(games);
-    else listGames = [];
+  helpers.addSavedGame(listGames);
 
-    helpers.addSavedGame(listGames);
-  });
+  // servie worker
+  navigator.serviceWorker
+    .register("./worker.js")
+    .then((worker) => console.log("Service Worker registrado"))
+    .catch((err) => console.warn(err));
+});
 
-  document.addEventListener("change", (e) => {
+document.addEventListener("change", (e) => {
+  if (e.target === colorInput) return helpers.setTheme(e);
+});
 
-    if (e.target === colorInput) return helpers.setTheme(e);
-  });
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") {
+    helpers.cleanUpPieze();
+    helpers.quitPossibles();
+    helpers.closeModal();
+  }
+});
 
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") {
-      helpers.cleanUpPieze();
-      helpers.quitPossibles();
-      helpers.closeModal();
-    }
-  });
-
-document.addEventListener("submit", e=>{
+document.addEventListener("submit", (e) => {
   e.preventDefault();
 
-  if(e.target.name === "Guardar"){
+  if (e.target.name === "Guardar") {
     let nameGame = e.target.nombre.value;
     saveGame(nameGame);
     helpers.closeModal();
     e.target.reset();
   }
 
-  if(e.target.name === "Coronar"){
+  if (e.target.name === "Coronar") {
     let pieceName = e.target.nombre.value;
     let position = e.target.pieceId.value;
     let piece = helpers.getPieceByPosition(position);
 
-    if(!piece) return helpers.showInfo("fallo la coronacion");
+    if (!piece) return helpers.showInfo("fallo la coronacion");
     piece.coronar(pieceName);
     e.target.reset();
   }
-
-})
+});
