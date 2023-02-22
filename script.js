@@ -53,9 +53,9 @@ export let initialPieces = [
 export let game = {
   whiteTurn: true,
   upPiece: null,
-  jaque: {
-    rey: []
-    },
+  jaque: [],
+  winner: false,
+  reySolo: {solo: false, rey: null, count: 50}
 };
 
 export let listPieces = [];
@@ -68,7 +68,10 @@ export function resetGame() {
   helpers.cleanUpPieze();
   game.whiteTurn = true;
   game.upPiece = null;
-  game.jaque = {rey: []};
+  game.jaque = [];
+  game.winner = false;
+  game.reySolo = {solo: false, rey: null, count: 50};
+  
   helpers.fixSetIndicator();
 
   return renderPieces(listPieces);

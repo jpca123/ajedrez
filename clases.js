@@ -27,6 +27,7 @@ class Piece {
   }
 
   up(){
+    if(game.winner) return false;
     if (!helpers.validateTurn(this)) return helpers.cleanUpPieze();
 
     this.node.classList.add("up-pieze");
@@ -42,6 +43,7 @@ class Piece {
   }
 
   move(position){
+    if(game.winner) return false;
     if (!helpers.validateTurn(this)) {
       return helpers.cleanUpPieze();
     }
@@ -55,10 +57,12 @@ class Piece {
     helpers.quitPossibles();
     
     helpers.cleanUpPieze();
+    if(game.reySolo.solo && game.reySolo.rey.isWhite === this.isWhite) game.reySolo.count = game.reySolo.count - 1;
     this.validJaque();
   }
 
   kill (enemy){
+    if(game.winner) return false;
     // si son del mismo color o no es su turno
     if (this.isWhite === enemy.isWhite || !helpers.validateTurn(this)) {
       return helpers.cleanUpPieze();
@@ -72,6 +76,8 @@ class Piece {
     let indexEnemy = listPieces.findIndex(piece => piece===enemy);
     listPieces.splice(indexEnemy, 1);  
     helpers.cleanUpPieze();
+
+    if(game.reySolo.solo && game.reySolo.rey.isWhite === this.isWhite) game.reySolo.count = game.reySolo.count - 1;
     this.validJaque();
   }
 

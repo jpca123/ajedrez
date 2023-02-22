@@ -84,11 +84,33 @@ export function fixSetIndicator() {
 }
 
 export function validWinner(){
+  if(listPieces.length === 3){
+
+    if(game.reySolo.solo && game.reySolo.rey.isWhite !== game.whiteTurn && game.reySolo.count < 1) {
+      game.winner = true;
+      let colorRey = game.reySolo.rey.isWhite? "blanco": "negro";
+      return showInfo(`han pasado 50 jugadas desde que el rey ${colorRey} quedo solo, por lo tanto las partida termina en <b>Tablas</b>`, "Tablas");
+    }
+
+    if(!game.reySolo.solo) {
+      game.reySolo.rey = listPieces.find(piece => piece.name==="Rey" && piece.isWhite === game.whiteTurn);
+      let colorRey = game.reySolo.rey.isWhite? "blanco": "negro";
+      showInfo(`EL rey ${colorRey} ha quedado solo, a partir de ahora inicia la cuenta de 50 jugadas para dar mate, de lo contrario la partida quedará en tablas`); 
+      game.reySolo.solo = true;
+    }
+    console.log(game.reySolo)
+  }
+
+  if(listPieces.length === 2) {
+    game.winner = true;
+    showInfo("Por regla de imposibilidad material de dar mate la partida termina en <b>Tablas</b>", "Tablas");
+  }
+
   let whiteTurn = game.whiteTurn;
   let win = true;
 
   for(let piece of listPieces){
-    // if(!win) break;
+    if(!win) break;
     
     if(whiteTurn !== piece.isWhite) continue;
     let posibles = piece.getValidPossibles();
@@ -97,8 +119,11 @@ export function validWinner(){
 
   if(win){
     let winners = whiteTurn? "Negras": "blancas";
-    if(!document.querySelector(".jaque")) return showInfo(`No hay movimientos posibles la partida termina en <b>Tablas</b> o empate`, "Tablas");
-
+    if(!document.querySelector(".jaque")) {
+      game.winner = true;
+      return showInfo(`No hay movimientos posibles la partida termina en <b>Tablas</b> o empate`, "Tablas");
+    }
+    game.winner = true;
     return showInfo(`Las ${winners} han dado <b>Jaque Mate</b> y han Ganado la partida`, "Jaque Mate");
   }
 }

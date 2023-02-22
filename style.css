@@ -11,7 +11,7 @@
     --dark-color: rgb(32 126 163);
     --bg-color: rgb(25, 26, 26);
     --color-posible: rgb(110, 11, 11);
-    --width-game: min(90vh, calc(100vw - 2rem));
+    --width-game: min(90vh, calc(100vw - 3rem));
     --danger-color: rgb(255, 41, 41);
 }
 
